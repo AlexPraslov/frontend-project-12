@@ -11,9 +11,20 @@ export const fetchMessages = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
-      // Сервер возвращает массив напрямую
-      console.log('fetchMessages: ответ для канала', channelId, '=', response.data);
-      return { channelId, messages: response.data };
+      
+      // Фильтруем сообщения ТОЛЬКО для запрошенного канала
+      const messagesForChannel = response.data.filter(msg => {
+        const msgChannelId = typeof msg.channelId === 'number' ? msg.channelId : parseInt(msg.channelId, 10);
+        const requestedChannelId = typeof channelId === 'number' ? channelId : parseInt(channelId, 10);
+        return msgChannelId === requestedChannelId;
+      });
+      
+      console.log(`Загружено ${messagesForChannel.length} сообщений для канала ${channelId}`);
+      
+      return { 
+        channelId: String(channelId), 
+        messages: messagesForChannel 
+      };
     } catch (error) {
       console.error('fetchMessages: ошибка =', error);
       return rejectWithValue(error.response?.data?.message || 'Ошибка загрузки сообщений');
@@ -31,27 +42,34 @@ const messagesSlice = createSlice({
   reducers: {
     addMessage: (state, action) => {
       const { channelId, message } = action.payload;
-      if (!state.byChannelId[channelId]) {
-        state.byChannelId[channelId] = [];
+      const normalizedChannelId = String(channelId);
+      
+      if (!state.byChannelId[normalizedChannelId]) {
+        state.byChannelId[normalizedChannelId] = [];
       }
-      state.byChannelId[channelId].push(message);
+      
+      // Проверяем, нет ли уже такого сообщения
+      const messageExists = state.byChannelId[normalizedChannelId].some(
+        msg => msg.id === message.id
+      );
+      
+      if (!messageExists) {
+        state.byChannelId[normalizedChannelId].push(message);
+      }
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchMessages.pending, (state) => {
-        console.log('messagesSlice: начало загрузки');
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchMessages.fulfilled, (state, action) => {
-        console.log('messagesSlice: загрузка успешна, payload =', action.payload);
         state.loading = false;
         const { channelId, messages } = action.payload;
-        state.byChannelId[channelId] = messages || [];
+        state.byChannelId[channelId] = messages;
       })
       .addCase(fetchMessages.rejected, (state, action) => {
-        console.log('messagesSlice: ошибка загрузки =', action.payload);
         state.loading = false;
         state.error = action.payload;
       });

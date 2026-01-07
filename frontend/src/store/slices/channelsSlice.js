@@ -26,13 +26,13 @@ const channelsSlice = createSlice({
   name: 'channels',
   initialState: {
     items: [],
-    currentChannelId: 1,
+    currentChannelId: '1', // Сразу как строка
     loading: false,
     error: null,
   },
   reducers: {
     setCurrentChannel: (state, action) => {
-      state.currentChannelId = action.payload;
+      state.currentChannelId = String(action.payload); // Нормализуем
     },
   },
   extraReducers: (builder) => {
@@ -47,6 +47,10 @@ const channelsSlice = createSlice({
         console.log('channelsSlice: тип payload =', typeof action.payload);
         state.loading = false;
         state.items = action.payload || [];
+        // Если нет текущего канала, устанавливаем первый
+        if (state.items.length > 0 && !state.currentChannelId) {
+          state.currentChannelId = String(state.items[0].id);
+        }
       })
       .addCase(fetchChannels.rejected, (state, action) => {
         console.log('channelsSlice: ошибка загрузки =', action.payload);

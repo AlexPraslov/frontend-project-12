@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
+import { initSocket, disconnectSocket } from '../socket';
 
 const AuthContext = createContext({});
 
@@ -12,8 +13,11 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       localStorage.setItem('token', token);
+      // Инициализируем WebSocket после установки токена
+      initSocket(token);
     } else {
       localStorage.removeItem('token');
+      disconnectSocket();
     }
     setLoading(false);
   }, [token]);
@@ -24,14 +28,14 @@ export const AuthProvider = ({ children }) => {
         username,
         password,
       });
-      
+
       const { token: newToken } = response.data;
       setToken(newToken);
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        message: error.response?.data?.message || 'Ошибка авторизации' 
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Ошибка авторизации'
       };
     }
   };

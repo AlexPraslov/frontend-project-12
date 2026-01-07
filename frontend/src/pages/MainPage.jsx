@@ -1,64 +1,108 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useAuth } from '../contexts/AuthContext';
 import { fetchChannels } from '../store/slices/channelsSlice';
-import { fetchMessages } from '../store/slices/messagesSlice';
+import ChannelsList from '../components/channels/ChannelsList';
+import MessagesList from '../components/messages/MessagesList';
 
 const MainPage = () => {
   const { logout } = useAuth();
   const dispatch = useDispatch();
-  
-  const { 
-    items: channels, 
-    currentChannelId,
-    loading: channelsLoading, 
-    error: channelsError 
-  } = useSelector((state) => state.channels);
-  
-  const { 
-    byChannelId, 
-    loading: messagesLoading, 
-    error: messagesError 
-  } = useSelector((state) => state.messages);
-
-  const messages = byChannelId?.[currentChannelId] || [];
 
   useEffect(() => {
     dispatch(fetchChannels());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (currentChannelId) {
-      dispatch(fetchMessages(currentChannelId));
-    }
-  }, [currentChannelId, dispatch]);
-
   return (
-    <div>
-      <h1>Чат</h1>
-      <button onClick={logout}>Выйти</button>
-      
-      <h2>Каналы:</h2>
-      {channelsLoading && <p>Загрузка каналов...</p>}
-      {channelsError && <p>Ошибка: {channelsError}</p>}
-      <ul>
-        {(channels || []).map((channel) => (
-          <li key={channel.id}>
-            {channel.name} (ID: {channel.id})
-          </li>
-        ))}
-      </ul>
+    <div style={{
+      display: 'flex',
+      height: '100vh',
+      fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
+      maxWidth: '1400px',
+      margin: '0 auto',
+      boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)'
+    }}>
+      {/* Левая панель - каналы */}
+      <div style={{
+        width: '280px',
+        borderRight: '1px solid #e0e0e0',
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: '#fff'
+      }}>
+        <div style={{
+          padding: '20px 25px',
+          borderBottom: '1px solid #e0e0e0',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          backgroundColor: '#f8f9fa'
+        }}>
+          <div>
+            <h3 style={{ 
+              margin: 0, 
+              fontSize: '22px', 
+              fontWeight: '700',
+              color: '#007bff',
+              marginBottom: '5px'
+            }}>
+              Hexlet Chat
+            </h3>
+            <div style={{ fontSize: '13px', color: '#666' }}>
+              Учебный проект
+            </div>
+          </div>
+          <button
+            onClick={logout}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#6c757d',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: '500',
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#5a6268';
+              e.currentTarget.style.transform = 'translateY(-1px)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#6c757d';
+              e.currentTarget.style.transform = 'translateY(0)';
+            }}
+          >
+            Выйти
+          </button>
+        </div>
+        
+        <div style={{
+          padding: '15px 25px',
+          borderBottom: '1px solid #e0e0e0',
+          backgroundColor: '#f8f9fa',
+          fontSize: '13px',
+          fontWeight: '600',
+          color: '#495057',
+          letterSpacing: '0.3px'
+        }}>
+          КАНАЛЫ
+        </div>
+        
+        <ChannelsList />
+      </div>
 
-      <h2>Сообщения в канале {currentChannelId}:</h2>
-      {messagesLoading && <p>Загрузка сообщений...</p>}
-      {messagesError && <p>Ошибка: {messagesError}</p>}
-      <ul>
-        {messages.map((message) => (
-          <li key={message.id}>
-            <strong>{message.username}:</strong> {message.body}
-          </li>
-        ))}
-      </ul>
+      {/* Правая панель - сообщения */}
+      <div style={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: '#fff',
+        minWidth: '0'
+      }}>
+        <MessagesList />
+      </div>
     </div>
   );
 };
