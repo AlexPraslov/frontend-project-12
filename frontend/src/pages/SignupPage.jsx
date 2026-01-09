@@ -1,44 +1,54 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { useEffect } from 'react';
+import axios from 'axios';
+import { useState } from 'react';
 
-const LoginPage = () => {
-  const { login, isAuthenticated } = useAuth();
+const SignupPage = () => {
+  const [serverError, setServerError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/');
-    }
-  }, [isAuthenticated, navigate]);
-
-  const initialValues = {
-    username: 'admin',
-    password: 'admin',
-  };
 
   const validationSchema = Yup.object({
     username: Yup.string()
-      .min(3, 'Имя пользователя должно быть не менее 3 символов')
-      .max(20, 'Имя пользователя должно быть не более 20 символов')
+      .min(3, 'Имя пользователя должно быть от 3 до 20 символов')
+      .max(20, 'Имя пользователя должно быть от 3 до 20 символов')
       .required('Обязательное поле'),
     password: Yup.string()
-      .min(3, 'Пароль должен быть не менее 3 символов')
+      .min(6, 'Пароль должен быть не менее 6 символов')
+      .required('Обязательное поле'),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref('password'), null], 'Пароли должны совпадать')
       .required('Обязательное поле'),
   });
 
-  const handleSubmit = async (values, { setSubmitting, setErrors }) => {
-    const result = await login(values.username, values.password);
+  const handleSubmit = async (values, { resetForm }) => {
+    setSubmitting(true);
+    setServerError('');
 
-    if (result.success) {
-      // Редирект произойдет автоматически через useEffect
-    } else {
-      setErrors({ submit: result.message });
+    try {
+      // Отправляем запрос на регистрацию
+      await axios.post('/api/v1/signup', {
+        username: values.username,
+        password: values.password,
+      });
+
+      // После успешной регистрации редирект на главную
+      navigate('/');
+      
+    } catch (error) {
+      console.error('Ошибка регистрации:', error);
+      
+      if (error.response?.status === 409) {
+        setServerError('Пользователь с таким именем уже существует');
+      } else {
+        setServerError(error.response?.data?.message || 'Ошибка регистрации. Попробуйте еще раз.');
+      }
+      
+      resetForm();
+    } finally {
+      setSubmitting(false);
     }
-
-    setSubmitting(false);
   };
 
   return (
@@ -66,17 +76,17 @@ const LoginPage = () => {
           fontSize: '28px',
           fontWeight: '600'
         }}>
-          Вход в Hexlet Chat
+          Регистрация
         </h1>
         
         <Formik
-          initialValues={initialValues}
+          initialValues={{ username: '', password: '', confirmPassword: '' }}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
           {({ isSubmitting, errors, touched }) => (
             <Form>
-              {errors.submit && (
+              {serverError && (
                 <div style={{ 
                   color: '#dc3545', 
                   marginBottom: '20px',
@@ -86,10 +96,11 @@ const LoginPage = () => {
                   fontSize: '14px',
                   textAlign: 'center'
                 }}>
-                  {errors.submit}
+                  {serverError}
                 </div>
               )}
 
+              {/* Имя пользователя */}
               <div style={{ marginBottom: '20px' }}>
                 <label htmlFor="username" style={{
                   display: 'block',
@@ -127,7 +138,8 @@ const LoginPage = () => {
                 </ErrorMessage>
               </div>
 
-              <div style={{ marginBottom: '25px' }}>
+              {/* Пароль */}
+              <div style={{ marginBottom: '20px' }}>
                 <label htmlFor="password" style={{
                   display: 'block',
                   marginBottom: '8px',
@@ -162,26 +174,67 @@ const LoginPage = () => {
                     </div>
                   )}
                 </ErrorMessage>
+                <div style={{ fontSize: '12px', color: '#6c757d', marginTop: '5px' }}>
+                  Минимум 6 символов
+                </div>
+              </div>
+
+              {/* Подтверждение пароля */}
+              <div style={{ marginBottom: '25px' }}>
+                <label htmlFor="confirmPassword" style={{
+                  display: 'block',
+                  marginBottom: '8px',
+                  fontWeight: '500',
+                  color: '#555',
+                  fontSize: '14px'
+                }}>
+                  Подтвердите пароль:
+                </label>
+                <Field 
+                  id="confirmPassword" 
+                  name="confirmPassword" 
+                  type="password"
+                  style={{
+                    width: '100%',
+                    padding: '12px 15px',
+                    border: `1px solid ${touched.confirmPassword && errors.confirmPassword ? '#dc3545' : '#ddd'}`,
+                    borderRadius: '6px',
+                    fontSize: '16px',
+                    boxSizing: 'border-box',
+                    transition: 'border-color 0.2s'
+                  }}
+                />
+                <ErrorMessage name="confirmPassword">
+                  {msg => (
+                    <div style={{ 
+                      color: '#dc3545', 
+                      fontSize: '13px', 
+                      marginTop: '5px' 
+                    }}>
+                      {msg}
+                    </div>
+                  )}
+                </ErrorMessage>
               </div>
 
               <button 
                 type="submit" 
-                disabled={isSubmitting}
+                disabled={submitting || isSubmitting}
                 style={{
                   width: '100%',
                   padding: '14px',
-                  backgroundColor: isSubmitting ? '#6c757d' : '#007bff',
+                  backgroundColor: submitting || isSubmitting ? '#6c757d' : '#28a745',
                   color: 'white',
                   border: 'none',
                   borderRadius: '6px',
                   fontSize: '16px',
                   fontWeight: '600',
-                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                  cursor: (submitting || isSubmitting) ? 'not-allowed' : 'pointer',
                   transition: 'background-color 0.2s',
                   marginBottom: '20px'
                 }}
               >
-                {isSubmitting ? 'Вход...' : 'Войти'}
+                {submitting || isSubmitting ? 'Регистрация...' : 'Зарегистрироваться'}
               </button>
             </Form>
           )}
@@ -196,15 +249,15 @@ const LoginPage = () => {
           color: '#666'
         }}>
           <p style={{ margin: '0 0 10px 0' }}>
-            Нет аккаунта?
+            Уже есть аккаунт?
           </p>
           <p style={{ margin: '0' }}>
-            <Link to="/signup" style={{
-              color: '#28a745',
+            <Link to="/login" style={{
+              color: '#007bff',
               textDecoration: 'none',
               fontWeight: '500'
             }}>
-              Зарегистрироваться
+              Войти в аккаунт
             </Link>
           </p>
           <p style={{ margin: '20px 0 0 0' }}>
@@ -221,4 +274,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default SignupPage;

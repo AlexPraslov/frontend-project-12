@@ -5,7 +5,18 @@ const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
-    return <div>Загрузка...</div>;
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 'calc(100vh - 70px)',
+        fontSize: '18px',
+        color: '#666'
+      }}>
+        Загрузка...
+      </div>
+    );
   }
 
   if (!isAuthenticated) {
