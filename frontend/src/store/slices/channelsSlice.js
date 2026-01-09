@@ -1,5 +1,14 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { 
+  notifyChannelCreated, 
+  notifyChannelRenamed, 
+  notifyChannelRemoved,
+  notifyCreateChannelError,
+  notifyRenameChannelError,
+  notifyRemoveChannelError,
+  notifyLoadChannelsError
+} from '../../utils/notifications';
 
 export const fetchChannels = createAsyncThunk(
   'channels/fetchChannels',
@@ -13,6 +22,7 @@ export const fetchChannels = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
+      notifyLoadChannelsError();
       return rejectWithValue(error.response?.data?.message || 'Ошибка загрузки каналов');
     }
   }
@@ -30,8 +40,10 @@ export const addChannel = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
+      notifyChannelCreated();
       return response.data;
     } catch (error) {
+      notifyCreateChannelError();
       return rejectWithValue(error.response?.data?.message || 'Ошибка создания канала');
     }
   }
@@ -47,8 +59,10 @@ export const removeChannel = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
+      notifyChannelRemoved();
       return channelId;
     } catch (error) {
+      notifyRemoveChannelError();
       return rejectWithValue(error.response?.data?.message || 'Ошибка удаления канала');
     }
   }
@@ -66,8 +80,10 @@ export const renameChannel = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
+      notifyChannelRenamed();
       return response.data;
     } catch (error) {
+      notifyRenameChannelError();
       return rejectWithValue(error.response?.data?.message || 'Ошибка переименования канала');
     }
   }

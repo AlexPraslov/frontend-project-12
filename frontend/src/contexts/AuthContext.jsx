@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { initSocket, disconnectSocket } from '../socket';
+import { notifyAuthError } from '../utils/notifications';
 
 const AuthContext = createContext({});
 
@@ -33,6 +34,7 @@ export const AuthProvider = ({ children }) => {
       setToken(newToken);
       return { success: true };
     } catch (error) {
+      notifyAuthError();
       return {
         success: false,
         message: error.response?.data?.message || 'Ошибка авторизации'

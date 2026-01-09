@@ -1,14 +1,18 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { getSocket } from '../../socket';
+import { notifyMessageSent, notifySendMessageError, notifyOffline, notifyConnectionRestored } from '../../utils/notifications';
+import { useTranslation } from 'react-i18next';
 
 const MessageForm = () => {
   const [messageText, setMessageText] = useState('');
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(null);
   const [connectionStatus, setConnectionStatus] = useState('disconnected');
+  const [wasDisconnected, setWasDisconnected] = useState(false);
   const retryCountRef = useRef(0);
   const maxRetries = 3;
+  const { t } = useTranslation();
 
   const { currentChannelId } = useSelector((state) => state.channels);
 
@@ -17,20 +21,34 @@ const MessageForm = () => {
     const socket = getSocket();
     if (!socket) return;
 
-    const updateStatus = () => {
-      setConnectionStatus(socket.connected ? 'connected' : 'disconnected');
+    const handleConnect = () => {
+      const newStatus = 'connected';
+      setConnectionStatus(newStatus);
+      
+      // Показываем уведомление о восстановлении только если было отключение
+      if (wasDisconnected) {
+        notifyConnectionRestored();
+        setWasDisconnected(false);
+      }
     };
 
-    updateStatus();
+    const handleDisconnect = () => {
+      setConnectionStatus('disconnected');
+      setWasDisconnected(true);
+      notifyOffline();
+    };
 
-    socket.on('connect', updateStatus);
-    socket.on('disconnect', updateStatus);
+    // Устанавливаем начальный статус
+    setConnectionStatus(socket.connected ? 'connected' : 'disconnected');
+
+    socket.on('connect', handleConnect);
+    socket.on('disconnect', handleDisconnect);
 
     return () => {
-      socket.off('connect', updateStatus);
-      socket.off('disconnect', updateStatus);
+      socket.off('connect', handleConnect);
+      socket.off('disconnect', handleDisconnect);
     };
-  }, []);
+  }, [wasDisconnected]);
 
   const sendMessageViaHTTP = async (messageData, retries = maxRetries) => {
     try {
@@ -52,6 +70,7 @@ const MessageForm = () => {
 
       const data = await response.json();
       retryCountRef.current = 0;
+      notifyMessageSent();
       return data;
 
     } catch (err) {
@@ -79,7 +98,7 @@ const MessageForm = () => {
     try {
       const messageData = {
         body: messageText.trim(),
-        channelId: Number(currentChannelId), // Конвертируем в число для сервера
+        channelId: Number(currentChannelId),
         username: 'admin',
       };
 
@@ -87,8 +106,9 @@ const MessageForm = () => {
       setMessageText('');
 
     } catch (err) {
-      const errorMessage = err.message || 'Ошибка отправки сообщения';
-      setError(`${errorMessage}. Сообщение не отправлено.`);
+      const errorMessage = err.message || t('errors.sendMessage');
+      setError(`${errorMessage}. ${t('errors.sendMessage')}`);
+      notifySendMessageError();
 
       // Сохраняем для повторной отправки
       const unsentMessages = JSON.parse(localStorage.getItem('unsentMessages') || '[]');
@@ -157,7 +177,7 @@ const MessageForm = () => {
           marginRight: '6px'
         }} />
         <span>
-          {connectionStatus === 'connected' ? 'Онлайн' : 'Офлайн'}
+          {connectionStatus === 'connected' ? t('chat.messages.connection.online') : t('chat.messages.connection.offline')}
         </span>
       </div>
 
@@ -187,7 +207,7 @@ const MessageForm = () => {
                   cursor: 'pointer'
                 }}
               >
-                Попробовать отправить сохраненные сообщения ({unsentMessages.length})
+                {t('chat.messages.unsent', { count: unsentMessages.length })}
               </button>
             </div>
           )}
@@ -200,7 +220,7 @@ const MessageForm = () => {
           type="text"
           value={messageText}
           onChange={(e) => setMessageText(e.target.value)}
-          placeholder="Введите сообщение..."
+          placeholder={t('chat.messages.placeholder')}
           style={{
             flex: 1,
             padding: '10px 15px',
@@ -226,7 +246,7 @@ const MessageForm = () => {
             minWidth: '100px'
           }}
         >
-          {sending ? 'Отправка...' : 'Отправить'}
+          {sending ? t('chat.messages.sending') : t('chat.messages.send')}
         </button>
       </div>
     </form>

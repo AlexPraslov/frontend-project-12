@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { notifyLoadMessagesError } from '../../utils/notifications';
 
 export const fetchMessages = createAsyncThunk(
   'messages/fetchMessages',
@@ -23,6 +24,7 @@ export const fetchMessages = createAsyncThunk(
         messages: messagesForChannel 
       };
     } catch (error) {
+      notifyLoadMessagesError();
       return rejectWithValue(error.response?.data?.message || 'Ошибка загрузки сообщений');
     }
   }
