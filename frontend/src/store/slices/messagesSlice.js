@@ -12,21 +12,17 @@ export const fetchMessages = createAsyncThunk(
         },
       });
       
-      // Фильтруем сообщения ТОЛЬКО для запрошенного канала
       const messagesForChannel = response.data.filter(msg => {
         const msgChannelId = typeof msg.channelId === 'number' ? msg.channelId : parseInt(msg.channelId, 10);
         const requestedChannelId = typeof channelId === 'number' ? channelId : parseInt(channelId, 10);
         return msgChannelId === requestedChannelId;
       });
       
-      console.log(`Загружено ${messagesForChannel.length} сообщений для канала ${channelId}`);
-      
       return { 
         channelId: String(channelId), 
         messages: messagesForChannel 
       };
     } catch (error) {
-      console.error('fetchMessages: ошибка =', error);
       return rejectWithValue(error.response?.data?.message || 'Ошибка загрузки сообщений');
     }
   }
@@ -48,7 +44,6 @@ const messagesSlice = createSlice({
         state.byChannelId[normalizedChannelId] = [];
       }
       
-      // Проверяем, нет ли уже такого сообщения
       const messageExists = state.byChannelId[normalizedChannelId].some(
         msg => msg.id === message.id
       );
@@ -56,6 +51,10 @@ const messagesSlice = createSlice({
       if (!messageExists) {
         state.byChannelId[normalizedChannelId].push(message);
       }
+    },
+    removeChannelMessages: (state, action) => {
+      const channelId = String(action.payload);
+      delete state.byChannelId[channelId];
     },
   },
   extraReducers: (builder) => {
@@ -76,5 +75,5 @@ const messagesSlice = createSlice({
   },
 });
 
-export const { addMessage } = messagesSlice.actions;
+export const { addMessage, removeChannelMessages } = messagesSlice.actions;
 export default messagesSlice.reducer;

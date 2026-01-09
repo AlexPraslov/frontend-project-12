@@ -1,9 +1,12 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { setCurrentChannel } from '../../store/slices/channelsSlice';
+import ChannelDropdown from './ChannelDropdown';
+import { useRef, useEffect } from 'react';
 
 const ChannelsList = () => {
   const dispatch = useDispatch();
   const { items, currentChannelId, loading, error } = useSelector((state) => state.channels);
+  const containerRef = useRef(null);
 
   if (loading) {
     return (
@@ -22,7 +25,7 @@ const ChannelsList = () => {
   }
 
   return (
-    <div style={{ flex: 1, overflowY: 'auto' }}>
+    <div ref={containerRef} style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
       {items.map((channel) => {
         const normalizedCurrentId = String(currentChannelId);
         const normalizedChannelId = String(channel.id);
@@ -31,7 +34,6 @@ const ChannelsList = () => {
         return (
           <div
             key={channel.id}
-            onClick={() => dispatch(setCurrentChannel(channel.id))}
             style={{
               padding: '12px 15px',
               borderBottom: '1px solid #f0f0f0',
@@ -39,6 +41,10 @@ const ChannelsList = () => {
               color: isActive ? 'white' : '#333',
               cursor: 'pointer',
               transition: 'background-color 0.2s',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              position: 'relative',
             }}
             onMouseEnter={(e) => {
               if (!isActive) {
@@ -51,18 +57,58 @@ const ChannelsList = () => {
               }
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <span style={{ marginRight: '10px', fontWeight: 'bold' }}>#</span>
-              <span style={{ flex: 1, fontSize: '14px' }}>{channel.name}</span>
+            <div 
+              onClick={() => dispatch(setCurrentChannel(channel.id))}
+              style={{ 
+                display: 'flex', 
+                alignItems: 'center',
+                flex: 1,
+                overflow: 'hidden',
+                minWidth: 0,
+              }}
+            >
+              <span style={{ 
+                marginRight: '10px', 
+                fontWeight: 'bold',
+                color: isActive ? 'white' : '#666',
+                flexShrink: 0,
+              }}>
+                #
+              </span>
+              <span style={{ 
+                flex: 1,
+                fontSize: '14px',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                minWidth: 0,
+              }}>
+                {channel.name}
+              </span>
               {!channel.removable && (
                 <span style={{ 
                   fontSize: '11px', 
                   opacity: 0.7,
-                  color: isActive ? 'rgba(255,255,255,0.8)' : '#666'
+                  color: isActive ? 'rgba(255,255,255,0.8)' : '#666',
+                  marginLeft: '8px',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
                 }}>
                   системный
                 </span>
               )}
+            </div>
+            
+            <div 
+              onClick={(e) => e.stopPropagation()}
+              style={{ 
+                marginLeft: '10px',
+                flexShrink: 0,
+                position: 'relative',
+                zIndex: 1,
+              }}
+            >
+              <ChannelDropdown channelId={channel.id} />
             </div>
           </div>
         );
