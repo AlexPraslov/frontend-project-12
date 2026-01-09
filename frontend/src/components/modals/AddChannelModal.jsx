@@ -3,22 +3,24 @@ import * as Yup from 'yup';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addChannel } from '../../store/slices/channelsSlice';
+import { useTranslation } from 'react-i18next';
 
 const AddChannelModal = ({ show, onHide }) => {
   const dispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);
   const channels = useSelector((state) => state.channels.items);
+  const { t } = useTranslation();
 
   const validationSchema = Yup.object({
     name: Yup.string()
-      .min(3, 'Должно быть от 3 до 20 символов')
-      .max(20, 'Должно быть от 3 до 20 символов')
-      .test('unique', 'Канал с таким именем уже существует', (value) => {
+      .min(3, t('chat.channels.addModal.lengthError'))
+      .max(20, t('chat.channels.addModal.lengthError'))
+      .test('unique', t('chat.channels.addModal.uniqueError'), (value) => {
         return !channels.some(channel => 
           channel.name.toLowerCase() === value.toLowerCase()
         );
       })
-      .required('Обязательное поле'),
+      .required(t('auth.validation.required')),
   });
 
   const handleSubmit = async (values, { resetForm }) => {
@@ -70,7 +72,7 @@ const AddChannelModal = ({ show, onHide }) => {
             fontWeight: '600',
             color: '#212529',
           }}>
-            Добавить канал
+            {t('chat.channels.addModal.title')}
           </h3>
         </div>
 
@@ -94,7 +96,7 @@ const AddChannelModal = ({ show, onHide }) => {
                       color: '#495057',
                     }}
                   >
-                    Имя канала
+                    {t('chat.channels.addModal.name')}
                   </label>
                   <Field
                     type="text"
@@ -141,7 +143,7 @@ const AddChannelModal = ({ show, onHide }) => {
                     marginTop: '8px',
                     padding: '4px 0',
                   }}>
-                    Имя канала должно быть от 3 до 20 символов и быть уникальным
+                    {t('chat.channels.addModal.hint')}
                   </div>
                 </div>
               </div>
@@ -182,7 +184,7 @@ const AddChannelModal = ({ show, onHide }) => {
                     }
                   }}
                 >
-                  Отменить
+                  {t('common.cancel')}
                 </button>
                 <button
                   type="submit"
@@ -210,7 +212,7 @@ const AddChannelModal = ({ show, onHide }) => {
                     }
                   }}
                 >
-                  {submitting ? 'Создание...' : 'Создать'}
+                  {submitting ? t('chat.channels.addModal.loading') : t('chat.channels.addModal.submit')}
                 </button>
               </div>
             </Form>

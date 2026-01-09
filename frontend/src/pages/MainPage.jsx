@@ -4,10 +4,12 @@ import { fetchChannels } from '../store/slices/channelsSlice';
 import ChannelsList from '../components/channels/ChannelsList';
 import MessagesList from '../components/messages/MessagesList';
 import AddChannelModal from '../components/modals/AddChannelModal';
+import { useTranslation } from 'react-i18next';
 
 const MainPage = () => {
   const dispatch = useDispatch();
   const [showAddModal, setShowAddModal] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     dispatch(fetchChannels());
@@ -45,7 +47,7 @@ const MainPage = () => {
               color: '#495057',
               letterSpacing: '0.3px'
             }}>
-              КАНАЛЫ
+              {t('chat.channels.title')}
             </div>
             <button
               onClick={() => setShowAddModal(true)}
@@ -69,7 +71,7 @@ const MainPage = () => {
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
-              + Добавить
+              {t('chat.channels.addButton')}
             </button>
           </div>
           

@@ -3,10 +3,12 @@ import * as Yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const LoginPage = () => {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -21,12 +23,12 @@ const LoginPage = () => {
 
   const validationSchema = Yup.object({
     username: Yup.string()
-      .min(3, 'Имя пользователя должно быть не менее 3 символов')
-      .max(20, 'Имя пользователя должно быть не более 20 символов')
-      .required('Обязательное поле'),
+      .min(3, t('auth.validation.usernameLength'))
+      .max(20, t('auth.validation.usernameLength'))
+      .required(t('auth.validation.required')),
     password: Yup.string()
-      .min(3, 'Пароль должен быть не менее 3 символов')
-      .required('Обязательное поле'),
+      .min(3, t('auth.validation.passwordMin', { count: 3 }))
+      .required(t('auth.validation.required')),
   });
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
@@ -35,7 +37,7 @@ const LoginPage = () => {
     if (result.success) {
       // Редирект произойдет автоматически через useEffect
     } else {
-      setErrors({ submit: result.message });
+      setErrors({ submit: result.message || t('auth.validation.authError') });
     }
 
     setSubmitting(false);
@@ -66,7 +68,7 @@ const LoginPage = () => {
           fontSize: '28px',
           fontWeight: '600'
         }}>
-          Вход в Hexlet Chat
+          {t('auth.login.title')}
         </h1>
         
         <Formik
@@ -98,7 +100,7 @@ const LoginPage = () => {
                   color: '#555',
                   fontSize: '14px'
                 }}>
-                  Имя пользователя:
+                  {t('auth.login.username')}:
                 </label>
                 <Field 
                   id="username" 
@@ -135,7 +137,7 @@ const LoginPage = () => {
                   color: '#555',
                   fontSize: '14px'
                 }}>
-                  Пароль:
+                  {t('auth.login.password')}:
                 </label>
                 <Field 
                   id="password" 
@@ -181,7 +183,7 @@ const LoginPage = () => {
                   marginBottom: '20px'
                 }}
               >
-                {isSubmitting ? 'Вход...' : 'Войти'}
+                {isSubmitting ? t('auth.login.loading') : t('auth.login.submit')}
               </button>
             </Form>
           )}
@@ -196,7 +198,7 @@ const LoginPage = () => {
           color: '#666'
         }}>
           <p style={{ margin: '0 0 10px 0' }}>
-            Нет аккаунта?
+            {t('auth.login.noAccount')}
           </p>
           <p style={{ margin: '0' }}>
             <Link to="/signup" style={{
@@ -204,15 +206,7 @@ const LoginPage = () => {
               textDecoration: 'none',
               fontWeight: '500'
             }}>
-              Зарегистрироваться
-            </Link>
-          </p>
-          <p style={{ margin: '20px 0 0 0' }}>
-            <Link to="/" style={{
-              color: '#007bff',
-              textDecoration: 'none'
-            }}>
-              На главную
+              {t('auth.login.signupLink')}
             </Link>
           </p>
         </div>

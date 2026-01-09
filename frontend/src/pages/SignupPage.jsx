@@ -3,23 +3,25 @@ import * as Yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const SignupPage = () => {
   const [serverError, setServerError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const validationSchema = Yup.object({
     username: Yup.string()
-      .min(3, 'Имя пользователя должно быть от 3 до 20 символов')
-      .max(20, 'Имя пользователя должно быть от 3 до 20 символов')
-      .required('Обязательное поле'),
+      .min(3, t('auth.validation.usernameLength'))
+      .max(20, t('auth.validation.usernameLength'))
+      .required(t('auth.validation.required')),
     password: Yup.string()
-      .min(6, 'Пароль должен быть не менее 6 символов')
-      .required('Обязательное поле'),
+      .min(6, t('auth.validation.passwordMin', { count: 6 }))
+      .required(t('auth.validation.required')),
     confirmPassword: Yup.string()
-      .oneOf([Yup.ref('password'), null], 'Пароли должны совпадать')
-      .required('Обязательное поле'),
+      .oneOf([Yup.ref('password'), null], t('auth.validation.passwordsMatch'))
+      .required(t('auth.validation.required')),
   });
 
   const handleSubmit = async (values, { resetForm }) => {
@@ -40,9 +42,9 @@ const SignupPage = () => {
       console.error('Ошибка регистрации:', error);
       
       if (error.response?.status === 409) {
-        setServerError('Пользователь с таким именем уже существует');
+        setServerError(t('auth.signup.userExists'));
       } else {
-        setServerError(error.response?.data?.message || 'Ошибка регистрации. Попробуйте еще раз.');
+        setServerError(error.response?.data?.message || t('auth.signup.registrationError'));
       }
       
       resetForm();
@@ -76,7 +78,7 @@ const SignupPage = () => {
           fontSize: '28px',
           fontWeight: '600'
         }}>
-          Регистрация
+          {t('auth.signup.title')}
         </h1>
         
         <Formik
@@ -109,7 +111,7 @@ const SignupPage = () => {
                   color: '#555',
                   fontSize: '14px'
                 }}>
-                  Имя пользователя:
+                  {t('auth.signup.username')}:
                 </label>
                 <Field 
                   id="username" 
@@ -147,7 +149,7 @@ const SignupPage = () => {
                   color: '#555',
                   fontSize: '14px'
                 }}>
-                  Пароль:
+                  {t('auth.signup.password')}:
                 </label>
                 <Field 
                   id="password" 
@@ -175,7 +177,7 @@ const SignupPage = () => {
                   )}
                 </ErrorMessage>
                 <div style={{ fontSize: '12px', color: '#6c757d', marginTop: '5px' }}>
-                  Минимум 6 символов
+                  {t('auth.signup.minPassword')}
                 </div>
               </div>
 
@@ -188,7 +190,7 @@ const SignupPage = () => {
                   color: '#555',
                   fontSize: '14px'
                 }}>
-                  Подтвердите пароль:
+                  {t('auth.signup.confirmPassword')}:
                 </label>
                 <Field 
                   id="confirmPassword" 
@@ -234,7 +236,7 @@ const SignupPage = () => {
                   marginBottom: '20px'
                 }}
               >
-                {submitting || isSubmitting ? 'Регистрация...' : 'Зарегистрироваться'}
+                {submitting || isSubmitting ? t('auth.signup.loading') : t('auth.signup.submit')}
               </button>
             </Form>
           )}
@@ -249,7 +251,7 @@ const SignupPage = () => {
           color: '#666'
         }}>
           <p style={{ margin: '0 0 10px 0' }}>
-            Уже есть аккаунт?
+            {t('auth.signup.hasAccount')}
           </p>
           <p style={{ margin: '0' }}>
             <Link to="/login" style={{
@@ -257,15 +259,7 @@ const SignupPage = () => {
               textDecoration: 'none',
               fontWeight: '500'
             }}>
-              Войти в аккаунт
-            </Link>
-          </p>
-          <p style={{ margin: '20px 0 0 0' }}>
-            <Link to="/" style={{
-              color: '#007bff',
-              textDecoration: 'none'
-            }}>
-              На главную
+              {t('auth.signup.loginLink')}
             </Link>
           </p>
         </div>

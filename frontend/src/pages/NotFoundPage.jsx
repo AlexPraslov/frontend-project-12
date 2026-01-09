@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const NotFoundPage = () => {
+  const { t } = useTranslation();
+
   return (
     <div style={{
       display: 'flex',
@@ -26,7 +29,7 @@ const NotFoundPage = () => {
         color: '#333',
         margin: '0 0 20px 0'
       }}>
-        Страница не найдена
+        {t('notFound.subtitle')}
       </h2>
       <p style={{ 
         fontSize: '18px', 
@@ -35,7 +38,7 @@ const NotFoundPage = () => {
         margin: '0 0 40px 0',
         lineHeight: '1.6'
       }}>
-        Извините, запрашиваемая страница не существует или была перемещена.
+        {t('notFound.detailed')}
       </p>
       <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', justifyContent: 'center' }}>
         <Link 
@@ -59,7 +62,7 @@ const NotFoundPage = () => {
             e.currentTarget.style.transform = 'translateY(0)';
           }}
         >
-          На главную
+          {t('notFound.toMain')}
         </Link>
         <Link 
           to="/login"
@@ -82,7 +85,7 @@ const NotFoundPage = () => {
             e.currentTarget.style.transform = 'translateY(0)';
           }}
         >
-          Войти в аккаунт
+          {t('notFound.toLogin')}
         </Link>
       </div>
     </div>

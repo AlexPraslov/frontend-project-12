@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const Header = () => {
   const { isAuthenticated, logout } = useAuth();
+  const { t } = useTranslation();
 
   return (
     <header style={{
@@ -33,7 +35,7 @@ const Header = () => {
           }}
         >
           <span style={{ marginRight: '10px' }}>💬</span>
-          Hexlet Chat
+          {t('header.title')}
         </Link>
 
         {/* Правая часть - кнопки */}
@@ -41,7 +43,7 @@ const Header = () => {
           {isAuthenticated ? (
             <>
               <span style={{ color: 'white', fontSize: '14px' }}>
-                Добро пожаловать!
+                {t('header.welcome')}
               </span>
               <button
                 onClick={logout}
@@ -65,7 +67,7 @@ const Header = () => {
                   e.currentTarget.style.transform = 'translateY(0)';
                 }}
               >
-                Выйти
+                {t('header.logout')}
               </button>
             </>
           ) : (
@@ -90,7 +92,7 @@ const Header = () => {
                   e.currentTarget.style.backgroundColor = 'transparent';
                 }}
               >
-                Войти
+                {t('header.login')}
               </Link>
               <Link 
                 to="/signup"
@@ -114,7 +116,7 @@ const Header = () => {
                   e.currentTarget.style.transform = 'translateY(0)';
                 }}
               >
-                Регистрация
+                {t('header.signup')}
               </Link>
             </>
           )}
