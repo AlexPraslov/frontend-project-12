@@ -18,7 +18,7 @@ const SignupPage = () => {
       .max(20, t('auth.validation.usernameLength'))
       .required(t('auth.validation.required')),
     password: Yup.string()
-      .min(6, t('auth.validation.passwordMin', { count: 6 }))
+      .min(6, t('auth.validation.passwordMin'))
       .required(t('auth.validation.required')),
     confirmPassword: Yup.string()
       .oneOf([Yup.ref('password'), null], t('auth.validation.passwordsMatch'))
@@ -172,9 +172,6 @@ const SignupPage = () => {
                     </div>
                   )}
                 </ErrorMessage>
-                <div style={{ fontSize: '12px', color: '#6c757d', marginTop: '5px' }}>
-                  {t('auth.signup.minPassword')}
-                </div>
               </div>
 
               {/* Подтверждение пароля */}
