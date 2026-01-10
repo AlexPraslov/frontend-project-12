@@ -44,10 +44,10 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
   };
 
   // Обработка нажатия Enter в форме
-  const handleKeyDown = (e, handleSubmit) => {
+  const handleKeyDown = (e, submitForm) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSubmit();
+      submitForm();
     }
   };
 
@@ -97,10 +97,10 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ isValid, dirty, handleSubmit, errors, touched }) => (
+          {({ isValid, dirty, handleSubmit, errors, touched, submitForm }) => (
             <Form 
               onSubmit={handleSubmit}
-              onKeyDown={(e) => handleKeyDown(e, handleSubmit)}
+              onKeyDown={(e) => handleKeyDown(e, submitForm)}
             >
               <div style={{ padding: '24px' }}>
                 <div style={{ marginBottom: '8px' }}>
@@ -125,7 +125,7 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
                     style={{
                       width: '100%',
                       padding: '10px 12px',
-                      border: `1px solid ${touched.name && errors.name ? '#dc3545' : '#ced4da'}`,
+                      border: '1px solid #ced4da',
                       borderRadius: '6px',
                       fontSize: '14px',
                       transition: 'border-color 0.2s, box-shadow 0.2s',
@@ -135,7 +135,7 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
                       e.target.style.boxShadow = '0 0 0 0.2rem rgba(0, 123, 255, 0.25)';
                     }}
                     onBlur={(e) => {
-                      e.target.style.borderColor = touched.name && errors.name ? '#dc3545' : '#ced4da';
+                      e.target.style.borderColor = '#ced4da';
                       e.target.style.boxShadow = 'none';
                     }}
                   />
