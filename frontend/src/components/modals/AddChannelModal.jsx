@@ -39,6 +39,14 @@ const AddChannelModal = ({ show, onHide }) => {
     }
   };
 
+  // Обработка нажатия Enter в форме
+  const handleKeyDown = (e, submitForm) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      submitForm();
+    }
+  };
+
   if (!show) return null;
 
   return (
@@ -85,8 +93,11 @@ const AddChannelModal = ({ show, onHide }) => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ isValid, dirty, handleSubmit, errors, touched }) => (
-            <Form onSubmit={handleSubmit}>
+          {({ isValid, dirty, handleSubmit, errors, touched, submitForm }) => (
+            <Form 
+              onSubmit={handleSubmit}
+              onKeyDown={(e) => handleKeyDown(e, submitForm)}
+            >
               <div style={{ padding: '24px' }}>
                 <div style={{ marginBottom: '8px' }}>
                   <label 
@@ -106,6 +117,7 @@ const AddChannelModal = ({ show, onHide }) => {
                     name="name"
                     id="channelName"
                     autoFocus
+                    aria-label="Имя канала"
                     style={{
                       width: '100%',
                       padding: '10px 12px',
