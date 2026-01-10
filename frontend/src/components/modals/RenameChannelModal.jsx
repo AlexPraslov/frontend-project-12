@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { renameChannel } from '../../store/slices/channelsSlice';
-import { hasProfanity } from '../../utils/profanityFilter';
+import { hasProfanity, filterProfanity } from '../../utils/profanityFilter';
 import { useTranslation } from 'react-i18next';
 
 const RenameChannelModal = ({ show, onHide, channelId }) => {
@@ -23,10 +23,6 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
           ch.id !== channelId && ch.name.toLowerCase() === value.toLowerCase()
         );
       })
-      .test('profanity', t('chat.channels.addModal.profanityError'), (value) => {
-        // Проверяем на нецензурные слова
-        return !hasProfanity(value);
-      })
       .required(t('auth.validation.required')),
   });
 
@@ -35,7 +31,9 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
 
     setSubmitting(true);
     try {
-      await dispatch(renameChannel({ channelId, name: values.name })).unwrap();
+      // Фильтруем профанацию перед отправкой
+      const filteredName = filterProfanity(values.name);
+      await dispatch(renameChannel({ channelId, name: filteredName })).unwrap();
       resetForm();
       onHide();
     } catch (error) {

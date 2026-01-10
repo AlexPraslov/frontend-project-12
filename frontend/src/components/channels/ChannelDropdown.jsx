@@ -39,7 +39,7 @@ const ChannelDropdown = ({ channelId }) => {
 
   return (
     <>
-      <div style={{ position: 'relative' }}>
+      <div style={{ position: 'relative', display: 'inline-block' }}>
         <button
           ref={buttonRef}
           type="button"
@@ -53,13 +53,29 @@ const ChannelDropdown = ({ channelId }) => {
             color: '#6c757d',
             fontSize: '16px',
             lineHeight: '1',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 'auto',
+            height: '30px',
+            position: 'relative',
           }}
           onMouseEnter={(e) => e.currentTarget.style.color = '#007bff'}
           onMouseLeave={(e) => e.currentTarget.style.color = '#6c757d'}
           aria-label="Управление каналом"
           title="Управление каналом"
         >
-          ⋮
+          <span style={{ fontSize: '20px', fontWeight: 'bold', marginRight: '4px' }}>⋮</span>
+          <span style={{ 
+            fontSize: '0px',
+            opacity: 0,
+            height: 0,
+            width: 0,
+            overflow: 'hidden',
+            display: 'inline-block'
+          }}>
+            Управление каналом
+          </span>
         </button>
 
         {dropdownOpen && (
