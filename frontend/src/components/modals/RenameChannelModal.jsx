@@ -43,6 +43,14 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
     }
   };
 
+  // Обработка нажатия Enter в форме
+  const handleKeyDown = (e, handleSubmit) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
   if (!show || !channel) return null;
 
   return (
@@ -90,7 +98,10 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
           onSubmit={handleSubmit}
         >
           {({ isValid, dirty, handleSubmit, errors, touched }) => (
-            <Form onSubmit={handleSubmit}>
+            <Form 
+              onSubmit={handleSubmit}
+              onKeyDown={(e) => handleKeyDown(e, handleSubmit)}
+            >
               <div style={{ padding: '24px' }}>
                 <div style={{ marginBottom: '8px' }}>
                   <label
@@ -110,6 +121,7 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
                     name="name"
                     id="channelName"
                     autoFocus
+                    aria-label="Имя канала"
                     style={{
                       width: '100%',
                       padding: '10px 12px',

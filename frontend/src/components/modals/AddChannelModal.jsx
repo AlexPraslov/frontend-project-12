@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addChannel } from '../../store/slices/channelsSlice';
 import { useTranslation } from 'react-i18next';
-import { hasProfanity, filterProfanity } from '../../utils/profanityFilter';
+import { filterProfanity } from '../../utils/profanityFilter';
 
 const AddChannelModal = ({ show, onHide }) => {
   const dispatch = useDispatch();
@@ -36,6 +36,14 @@ const AddChannelModal = ({ show, onHide }) => {
       console.error('Ошибка при создании канала:', error);
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  // Обработка нажатия Enter в форме
+  const handleKeyDown = (e, handleSubmit) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
     }
   };
 
@@ -86,7 +94,10 @@ const AddChannelModal = ({ show, onHide }) => {
           onSubmit={handleSubmit}
         >
           {({ isValid, dirty, handleSubmit, errors, touched }) => (
-            <Form onSubmit={handleSubmit}>
+            <Form 
+              onSubmit={handleSubmit}
+              onKeyDown={(e) => handleKeyDown(e, handleSubmit)}
+            >
               <div style={{ padding: '24px' }}>
                 <div style={{ marginBottom: '8px' }}>
                   <label 
@@ -106,6 +117,7 @@ const AddChannelModal = ({ show, onHide }) => {
                     name="name"
                     id="channelName"
                     autoFocus
+                    aria-label="Имя канала"
                     style={{
                       width: '100%',
                       padding: '10px 12px',
