@@ -39,14 +39,6 @@ const AddChannelModal = ({ show, onHide }) => {
     }
   };
 
-  // Обработка нажатия Enter в форме
-  const handleKeyDown = (e, handleSubmit) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit();
-    }
-  };
-
   if (!show) return null;
 
   return (
@@ -94,10 +86,7 @@ const AddChannelModal = ({ show, onHide }) => {
           onSubmit={handleSubmit}
         >
           {({ isValid, dirty, handleSubmit, errors, touched }) => (
-            <Form 
-              onSubmit={handleSubmit}
-              onKeyDown={(e) => handleKeyDown(e, handleSubmit)}
-            >
+            <Form onSubmit={handleSubmit}>
               <div style={{ padding: '24px' }}>
                 <div style={{ marginBottom: '8px' }}>
                   <label 
@@ -117,7 +106,6 @@ const AddChannelModal = ({ show, onHide }) => {
                     name="name"
                     id="channelName"
                     autoFocus
-                    aria-label="Имя канала"
                     style={{
                       width: '100%',
                       padding: '10px 12px',
@@ -137,29 +125,21 @@ const AddChannelModal = ({ show, onHide }) => {
                   />
                   
                   {/* Подсказка при валидации */}
-                  {touched.name && errors.name && (
-                    <div style={{
-                      color: '#dc3545',
-                      fontSize: '13px',
-                      marginTop: '8px',
-                      padding: '8px 12px',
-                      backgroundColor: '#f8d7da',
-                      borderRadius: '4px',
-                      border: '1px solid #f5c6cb',
-                    }}>
-                      {errors.name}
-                    </div>
-                  )}
-                  
-                  {/* Общая подсказка о требованиях */}
-                  <div style={{
-                    fontSize: '12px',
-                    color: '#6c757d',
-                    marginTop: '8px',
-                    lineHeight: '1.4',
-                  }}>
-                    {t('chat.channels.addModal.hint')}
-                  </div>
+                  <ErrorMessage name="name">
+                    {msg => (
+                      <div style={{
+                        color: '#dc3545',
+                        fontSize: '13px',
+                        marginTop: '8px',
+                        padding: '8px 12px',
+                        backgroundColor: '#f8d7da',
+                        borderRadius: '4px',
+                        border: '1px solid #f5c6cb',
+                      }}>
+                        {msg}
+                      </div>
+                    )}
+                  </ErrorMessage>
                 </div>
               </div>
 

@@ -51,13 +51,14 @@ const ChannelDropdown = ({ channelId }) => {
             borderRadius: '4px',
             cursor: 'pointer',
             color: '#6c757d',
-            fontSize: '12px',
+            fontSize: '16px',
             lineHeight: '1',
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
             position: 'relative',
-            minWidth: '120px',
+            width: '30px',
+            height: '30px',
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.color = '#007bff';
@@ -70,13 +71,7 @@ const ChannelDropdown = ({ channelId }) => {
           aria-label="Управление каналом"
           title="Управление каналом"
         >
-          <span style={{ fontSize: '16px', fontWeight: 'bold', marginRight: '6px' }}>⋮</span>
-          <span style={{ 
-            fontSize: '12px',
-            opacity: 0.7,
-          }}>
-            Управление каналом
-          </span>
+          <span style={{ fontSize: '20px', fontWeight: 'bold' }}>⋮</span>
         </button>
 
         {dropdownOpen && (

@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { renameChannel } from '../../store/slices/channelsSlice';
-import { hasProfanity, filterProfanity } from '../../utils/profanityFilter';
+import { filterProfanity } from '../../utils/profanityFilter';
 import { useTranslation } from 'react-i18next';
 
 const RenameChannelModal = ({ show, onHide, channelId }) => {
@@ -125,7 +125,7 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
                     style={{
                       width: '100%',
                       padding: '10px 12px',
-                      border: '1px solid #ced4da',
+                      border: `1px solid ${touched.name && errors.name ? '#dc3545' : '#ced4da'}`,
                       borderRadius: '6px',
                       fontSize: '14px',
                       transition: 'border-color 0.2s, box-shadow 0.2s',
@@ -135,35 +135,27 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
                       e.target.style.boxShadow = '0 0 0 0.2rem rgba(0, 123, 255, 0.25)';
                     }}
                     onBlur={(e) => {
-                      e.target.style.borderColor = '#ced4da';
+                      e.target.style.borderColor = touched.name && errors.name ? '#dc3545' : '#ced4da';
                       e.target.style.boxShadow = 'none';
                     }}
                   />
 
                   {/* Подсказка при валидации */}
-                  {touched.name && errors.name && (
-                    <div style={{
-                      color: '#dc3545',
-                      fontSize: '13px',
-                      marginTop: '8px',
-                      padding: '8px 12px',
-                      backgroundColor: '#f8d7da',
-                      borderRadius: '4px',
-                      border: '1px solid #f5c6cb',
-                    }}>
-                      {errors.name}
-                    </div>
-                  )}
-
-                  {/* Общая подсказка о требованиях */}
-                  <div style={{
-                    fontSize: '12px',
-                    color: '#6c757d',
-                    marginTop: '8px',
-                    padding: '4px 0',
-                  }}>
-                    {t('chat.channels.renameModal.hint')}
-                  </div>
+                  <ErrorMessage name="name">
+                    {msg => (
+                      <div style={{
+                        color: '#dc3545',
+                        fontSize: '13px',
+                        marginTop: '8px',
+                        padding: '8px 12px',
+                        backgroundColor: '#f8d7da',
+                        borderRadius: '4px',
+                        border: '1px solid #f5c6cb',
+                      }}>
+                        {msg}
+                      </div>
+                    )}
+                  </ErrorMessage>
                 </div>
               </div>
 
