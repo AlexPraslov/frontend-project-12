@@ -4,28 +4,30 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { renameChannel } from '../../store/slices/channelsSlice';
 import { hasProfanity } from '../../utils/profanityFilter';
+import { useTranslation } from 'react-i18next';
 
 const RenameChannelModal = ({ show, onHide, channelId }) => {
   const dispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);
   const channels = useSelector((state) => state.channels.items);
+  const { t } = useTranslation();
 
   const channel = channels.find(ch => ch.id === channelId);
 
   const validationSchema = Yup.object({
     name: Yup.string()
-      .min(3, 'Должно быть от 3 до 20 символов')
-      .max(20, 'Должно быть от 3 до 20 символов')
-      .test('unique', 'Канал с таким именем уже существует', (value) => {
+      .min(3, t('chat.channels.addModal.lengthError'))
+      .max(20, t('chat.channels.addModal.lengthError'))
+      .test('unique', t('chat.channels.addModal.uniqueError'), (value) => {
         return !channels.some(ch =>
           ch.id !== channelId && ch.name.toLowerCase() === value.toLowerCase()
         );
       })
-      .test('profanity', 'Имя канала содержит недопустимые слова', (value) => {
+      .test('profanity', t('chat.channels.addModal.profanityError'), (value) => {
         // Проверяем на нецензурные слова
         return !hasProfanity(value);
       })
-      .required('Обязательное поле'),
+      .required(t('auth.validation.required')),
   });
 
   const handleSubmit = async (values, { resetForm }) => {
@@ -79,7 +81,7 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
             fontWeight: '600',
             color: '#212529',
           }}>
-            Переименовать канал
+            {t('chat.channels.renameModal.title')}
           </h3>
         </div>
 
@@ -103,7 +105,7 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
                       color: '#495057',
                     }}
                   >
-                    Новое имя канала
+                    {t('chat.channels.renameModal.name')}
                   </label>
                   <Field
                     type="text"
@@ -150,7 +152,7 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
                     marginTop: '8px',
                     padding: '4px 0',
                   }}>
-                    Имя канала должно быть от 3 до 20 символов и быть уникальным
+                    {t('chat.channels.renameModal.hint')}
                   </div>
                 </div>
               </div>
@@ -180,18 +182,8 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
                     transition: 'all 0.2s',
                     opacity: submitting ? 0.7 : 1,
                   }}
-                  onMouseEnter={(e) => {
-                    if (!submitting) {
-                      e.currentTarget.style.backgroundColor = '#5a6268';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!submitting) {
-                      e.currentTarget.style.backgroundColor = '#6c757d';
-                    }
-                  }}
                 >
-                  Отменить
+                  {t('common.cancel')}
                 </button>
                 <button
                   type="submit"
@@ -208,18 +200,8 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
                     transition: 'all 0.2s',
                     opacity: (!isValid || !dirty) ? 0.5 : 1,
                   }}
-                  onMouseEnter={(e) => {
-                    if (isValid && dirty && !submitting) {
-                      e.currentTarget.style.backgroundColor = '#0069d9';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (isValid && dirty && !submitting) {
-                      e.currentTarget.style.backgroundColor = '#007bff';
-                    }
-                  }}
                 >
-                  {submitting ? 'Сохранение...' : 'Сохранить'}
+                  {submitting ? t('chat.channels.renameModal.loading') : t('chat.channels.renameModal.submit')}
                 </button>
               </div>
             </Form>

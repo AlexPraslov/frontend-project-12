@@ -27,7 +27,6 @@ const LoginPage = () => {
       .max(20, t('auth.validation.usernameLength'))
       .required(t('auth.validation.required')),
     password: Yup.string()
-      .min(3, t('auth.validation.passwordMin', { count: 3 }))
       .required(t('auth.validation.required')),
   });
 
@@ -37,7 +36,7 @@ const LoginPage = () => {
     if (result.success) {
       // Редирект произойдет автоматически через useEffect
     } else {
-      setErrors({ submit: result.message || t('auth.validation.authError') });
+      setErrors({ submit: t('auth.validation.authError') });
     }
 
     setSubmitting(false);

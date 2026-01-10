@@ -178,14 +178,14 @@ const AddChannelModal = ({ show, onHide }) => {
                     transition: 'background-color 0.2s',
                   }}
                 >
-                  {t('chat.channels.addModal.cancel')}
+                  {t('common.cancel')}
                 </button>
                 <button
                   type="submit"
                   disabled={!isValid || !dirty || submitting}
                   style={{
                     padding: '8px 16px',
-                    backgroundColor: isValid && dirty && !submitting ? '#28a745' : '#6c757d',
+                    backgroundColor: isValid && dirty && !submitting ? '#007bff' : '#6c757d',
                     color: 'white',
                     border: 'none',
                     borderRadius: '6px',

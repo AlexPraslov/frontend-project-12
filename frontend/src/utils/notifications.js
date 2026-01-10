@@ -85,7 +85,7 @@ export const notifyMessageSent = () => {
 
 // Специфичные уведомления для ошибок
 export const notifyNetworkError = () => {
-  showError('notifications.error.network');
+  showError('errors.network');
 };
 
 export const notifyServerError = () => {
@@ -122,7 +122,7 @@ export const notifyAuthError = () => {
 
 // Уведомления о состоянии сети
 export const notifyOffline = () => {
-  showWarning('notifications.warning.offline');
+  showError('errors.network');
 };
 
 export const notifyReconnecting = () => {
