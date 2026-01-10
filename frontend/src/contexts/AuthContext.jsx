@@ -9,6 +9,7 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
+  const [username, setUsername] = useState(localStorage.getItem('username') || '');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,20 +19,23 @@ export const AuthProvider = ({ children }) => {
       initSocket(token);
     } else {
       localStorage.removeItem('token');
+      localStorage.removeItem('username');
       disconnectSocket();
     }
     setLoading(false);
   }, [token]);
 
-  const login = async (username, password) => {
+  const login = async (usernameInput, password) => {
     try {
       const response = await axios.post('/api/v1/login', {
-        username,
+        username: usernameInput,
         password,
       });
 
       const { token: newToken } = response.data;
       setToken(newToken);
+      setUsername(usernameInput);
+      localStorage.setItem('username', usernameInput);
       return { success: true };
     } catch (error) {
       notifyAuthError();
@@ -42,13 +46,42 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const signup = async (usernameInput, password) => {
+    try {
+      const response = await axios.post('/api/v1/signup', {
+        username: usernameInput,
+        password,
+      });
+
+      const { token: newToken } = response.data;
+      setToken(newToken);
+      setUsername(usernameInput);
+      localStorage.setItem('username', usernameInput);
+      return { success: true };
+    } catch (error) {
+      if (error.response?.status === 409) {
+        return {
+          success: false,
+          message: 'Пользователь с таким именем уже существует'
+        };
+      }
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Ошибка регистрации'
+      };
+    }
+  };
+
   const logout = () => {
     setToken(null);
+    setUsername('');
   };
 
   const value = {
     token,
+    username,
     login,
+    signup,
     logout,
     isAuthenticated: !!token,
     loading,

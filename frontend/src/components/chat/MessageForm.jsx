@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useAuth } from '../../contexts/AuthContext';
 import { getSocket } from '../../socket';
-import { notifyMessageSent, notifySendMessageError, notifyOffline, notifyConnectionRestored } from '../../utils/notifications';
+import { filterProfanity, hasProfanity } from '../../utils/profanityFilter';
+import { notifyMessageSent, notifySendMessageError, notifyOffline, notifyConnectionRestored, showWarning } from '../../utils/notifications';
 import { useTranslation } from 'react-i18next';
 
 const MessageForm = () => {
@@ -13,6 +15,7 @@ const MessageForm = () => {
   const retryCountRef = useRef(0);
   const maxRetries = 3;
   const { t } = useTranslation();
+  const { username } = useAuth();
 
   const { currentChannelId } = useSelector((state) => state.channels);
 
@@ -54,13 +57,23 @@ const MessageForm = () => {
     try {
       const token = localStorage.getItem('token');
       
+      // Фильтруем текст сообщения перед отправкой
+      const filteredBody = filterProfanity(messageData.body);
+      
+      // Проверяем, были ли отфильтрованы нецензурные слова
+      const hadProfanity = hasProfanity(messageData.body);
+      
       const response = await fetch('/api/v1/messages', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(messageData)
+        body: JSON.stringify({
+          ...messageData,
+          body: filteredBody,
+          username: username || 'user'
+        })
       });
 
       if (!response.ok) {
@@ -70,6 +83,12 @@ const MessageForm = () => {
 
       const data = await response.json();
       retryCountRef.current = 0;
+      
+      // Показываем предупреждение, если были нецензурные слова
+      if (hadProfanity) {
+        showWarning('notifications.warning.profanity');
+      }
+      
       notifyMessageSent();
       return data;
 
@@ -99,7 +118,6 @@ const MessageForm = () => {
       const messageData = {
         body: messageText.trim(),
         channelId: Number(currentChannelId),
-        username: 'admin',
       };
 
       await sendMessageViaHTTP(messageData);
@@ -137,7 +155,6 @@ const MessageForm = () => {
         const messageData = {
           body: msg.text,
           channelId: Number(msg.channelId),
-          username: 'admin'
         };
 
         await sendMessageViaHTTP(messageData);

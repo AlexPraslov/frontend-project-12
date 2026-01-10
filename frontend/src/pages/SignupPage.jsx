@@ -1,14 +1,15 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 
 const SignupPage = () => {
   const [serverError, setServerError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { signup } = useAuth();
   const { t } = useTranslation();
 
   const validationSchema = Yup.object({
@@ -29,24 +30,19 @@ const SignupPage = () => {
     setServerError('');
 
     try {
-      // Отправляем запрос на регистрацию
-      await axios.post('/api/v1/signup', {
-        username: values.username,
-        password: values.password,
-      });
+      const result = await signup(values.username, values.password);
 
-      // После успешной регистрации редирект на главную
-      navigate('/');
+      if (result.success) {
+        // После успешной регистрации редирект на главную
+        navigate('/');
+      } else {
+        setServerError(result.message || t('auth.signup.registrationError'));
+        resetForm();
+      }
       
     } catch (error) {
       console.error('Ошибка регистрации:', error);
-      
-      if (error.response?.status === 409) {
-        setServerError(t('auth.signup.userExists'));
-      } else {
-        setServerError(error.response?.data?.message || t('auth.signup.registrationError'));
-      }
-      
+      setServerError(t('auth.signup.registrationError'));
       resetForm();
     } finally {
       setSubmitting(false);

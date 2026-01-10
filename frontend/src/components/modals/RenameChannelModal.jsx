@@ -3,29 +3,34 @@ import * as Yup from 'yup';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { renameChannel } from '../../store/slices/channelsSlice';
+import { hasProfanity } from '../../utils/profanityFilter';
 
 const RenameChannelModal = ({ show, onHide, channelId }) => {
   const dispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);
   const channels = useSelector((state) => state.channels.items);
-  
+
   const channel = channels.find(ch => ch.id === channelId);
-  
+
   const validationSchema = Yup.object({
     name: Yup.string()
       .min(3, 'Должно быть от 3 до 20 символов')
       .max(20, 'Должно быть от 3 до 20 символов')
       .test('unique', 'Канал с таким именем уже существует', (value) => {
-        return !channels.some(ch => 
+        return !channels.some(ch =>
           ch.id !== channelId && ch.name.toLowerCase() === value.toLowerCase()
         );
+      })
+      .test('profanity', 'Имя канала содержит недопустимые слова', (value) => {
+        // Проверяем на нецензурные слова
+        return !hasProfanity(value);
       })
       .required('Обязательное поле'),
   });
 
   const handleSubmit = async (values, { resetForm }) => {
     if (!channel) return;
-    
+
     setSubmitting(true);
     try {
       await dispatch(renameChannel({ channelId, name: values.name })).unwrap();
@@ -88,8 +93,8 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
             <Form onSubmit={handleSubmit}>
               <div style={{ padding: '24px' }}>
                 <div style={{ marginBottom: '8px' }}>
-                  <label 
-                    htmlFor="channelName" 
+                  <label
+                    htmlFor="channelName"
                     style={{
                       display: 'block',
                       marginBottom: '8px',
@@ -122,7 +127,7 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
                       e.target.style.boxShadow = 'none';
                     }}
                   />
-                  
+
                   {/* Подсказка при валидации */}
                   {touched.name && errors.name && (
                     <div style={{
@@ -137,7 +142,7 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
                       {errors.name}
                     </div>
                   )}
-                  
+
                   {/* Общая подсказка о требованиях */}
                   <div style={{
                     fontSize: '12px',

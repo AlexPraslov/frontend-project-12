@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addChannel } from '../../store/slices/channelsSlice';
 import { useTranslation } from 'react-i18next';
+import { hasProfanity } from '../../utils/profanityFilter';
 
 const AddChannelModal = ({ show, onHide }) => {
   const dispatch = useDispatch();
@@ -19,6 +20,10 @@ const AddChannelModal = ({ show, onHide }) => {
         return !channels.some(channel => 
           channel.name.toLowerCase() === value.toLowerCase()
         );
+      })
+      .test('profanity', t('chat.channels.addModal.profanityError'), (value) => {
+        // Проверяем на нецензурные слова
+        return !hasProfanity(value);
       })
       .required(t('auth.validation.required')),
   });
@@ -141,7 +146,7 @@ const AddChannelModal = ({ show, onHide }) => {
                     fontSize: '12px',
                     color: '#6c757d',
                     marginTop: '8px',
-                    padding: '4px 0',
+                    lineHeight: '1.4',
                   }}>
                     {t('chat.channels.addModal.hint')}
                   </div>
@@ -151,11 +156,11 @@ const AddChannelModal = ({ show, onHide }) => {
               {/* Кнопки */}
               <div style={{
                 padding: '16px 24px',
-                borderTop: '1px solid #e9ecef',
                 backgroundColor: '#f8f9fa',
+                borderTop: '1px solid #e9ecef',
                 display: 'flex',
                 justifyContent: 'flex-end',
-                gap: '10px',
+                gap: '12px',
               }}>
                 <button
                   type="button"
@@ -167,49 +172,28 @@ const AddChannelModal = ({ show, onHide }) => {
                     color: 'white',
                     border: 'none',
                     borderRadius: '6px',
-                    cursor: submitting ? 'not-allowed' : 'pointer',
                     fontSize: '14px',
                     fontWeight: '500',
-                    transition: 'all 0.2s',
-                    opacity: submitting ? 0.7 : 1,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!submitting) {
-                      e.currentTarget.style.backgroundColor = '#5a6268';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!submitting) {
-                      e.currentTarget.style.backgroundColor = '#6c757d';
-                    }
+                    cursor: 'pointer',
+                    transition: 'background-color 0.2s',
                   }}
                 >
-                  {t('common.cancel')}
+                  {t('chat.channels.addModal.cancel')}
                 </button>
                 <button
                   type="submit"
                   disabled={!isValid || !dirty || submitting}
                   style={{
-                    padding: '8px 20px',
-                    backgroundColor: submitting ? '#6c757d' : '#28a745',
+                    padding: '8px 16px',
+                    backgroundColor: isValid && dirty && !submitting ? '#28a745' : '#6c757d',
                     color: 'white',
                     border: 'none',
                     borderRadius: '6px',
-                    cursor: (!isValid || !dirty || submitting) ? 'not-allowed' : 'pointer',
                     fontSize: '14px',
                     fontWeight: '500',
-                    transition: 'all 0.2s',
-                    opacity: (!isValid || !dirty) ? 0.5 : 1,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (isValid && dirty && !submitting) {
-                      e.currentTarget.style.backgroundColor = '#218838';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (isValid && dirty && !submitting) {
-                      e.currentTarget.style.backgroundColor = '#28a745';
-                    }
+                    cursor: isValid && dirty && !submitting ? 'pointer' : 'not-allowed',
+                    transition: 'background-color 0.2s',
+                    minWidth: '80px',
                   }}
                 >
                   {submitting ? t('chat.channels.addModal.loading') : t('chat.channels.addModal.submit')}
