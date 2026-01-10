@@ -32,8 +32,10 @@ const ChannelsList = () => {
         const isActive = normalizedCurrentId === normalizedChannelId;
 
         return (
-          <div
+          <button
             key={channel.id}
+            type="button"
+            onClick={() => dispatch(setCurrentChannel(channel.id))}
             style={{
               padding: '12px 15px',
               borderBottom: '1px solid #f0f0f0',
@@ -45,6 +47,11 @@ const ChannelsList = () => {
               alignItems: 'center',
               justifyContent: 'space-between',
               position: 'relative',
+              width: '100%',
+              border: 'none',
+              textAlign: 'left',
+              fontFamily: 'inherit',
+              fontSize: 'inherit',
             }}
             onMouseEnter={(e) => {
               if (!isActive) {
@@ -57,16 +64,13 @@ const ChannelsList = () => {
               }
             }}
           >
-            <div 
-              onClick={() => dispatch(setCurrentChannel(channel.id))}
-              style={{ 
-                display: 'flex', 
-                alignItems: 'center',
-                flex: 1,
-                overflow: 'hidden',
-                minWidth: 0,
-              }}
-            >
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center',
+              flex: 1,
+              overflow: 'hidden',
+              minWidth: 0,
+            }}>
               <span style={{ 
                 marginRight: '10px', 
                 fontWeight: 'bold',
@@ -110,7 +114,7 @@ const ChannelsList = () => {
             >
               <ChannelDropdown channelId={channel.id} />
             </div>
-          </div>
+          </button>
         );
       })}
     </div>
