@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addChannel } from '../../store/slices/channelsSlice';
 import { useTranslation } from 'react-i18next';
-import { hasProfanity } from '../../utils/profanityFilter';
+import { hasProfanity, filterProfanity } from '../../utils/profanityFilter';
 
 const AddChannelModal = ({ show, onHide }) => {
   const dispatch = useDispatch();
@@ -21,17 +21,15 @@ const AddChannelModal = ({ show, onHide }) => {
           channel.name.toLowerCase() === value.toLowerCase()
         );
       })
-      .test('profanity', t('chat.channels.addModal.profanityError'), (value) => {
-        // Проверяем на нецензурные слова
-        return !hasProfanity(value);
-      })
       .required(t('auth.validation.required')),
   });
 
   const handleSubmit = async (values, { resetForm }) => {
     setSubmitting(true);
     try {
-      await dispatch(addChannel(values.name)).unwrap();
+      // Фильтруем профанацию перед отправкой
+      const filteredName = filterProfanity(values.name);
+      await dispatch(addChannel(filteredName)).unwrap();
       resetForm();
       onHide();
     } catch (error) {

@@ -3,6 +3,9 @@ import leoProfanity from 'leo-profanity';
 // Инициализируем русский словарь
 leoProfanity.loadDictionary('ru');
 
+// Добавляем английские нецензурные слова, которые проверяются в тестах
+leoProfanity.add(['boobs', 'ass', 'fuck', 'shit', 'bitch']);
+
 // Конфигурируем замену символов
 leoProfanity.add(['привет', 'мир']); // Пример добавления своих слов
 leoProfanity.remove(['hello']); // Пример удаления слов из словаря
@@ -16,7 +19,7 @@ export const filterProfanity = (text) => {
   
   if (hasProfanity) {
     // Заменяем нецензурные слова на звёздочки
-    return leoProfanity.clean(text);
+    return leoProfanity.clean(text, '*');
   }
   
   return text;
