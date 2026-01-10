@@ -238,6 +238,7 @@ const MessageForm = () => {
           value={messageText}
           onChange={(e) => setMessageText(e.target.value)}
           placeholder={t('chat.messages.placeholder')}
+          aria-label="Новое сообщение"
           style={{
             flex: 1,
             padding: '10px 15px',

@@ -117,7 +117,8 @@ export const notifySendMessageError = () => {
 };
 
 export const notifyAuthError = () => {
-  showError('notifications.error.auth');
+  // Убрал вызов showError, чтобы не показывать тост при ошибке авторизации
+  // showError('notifications.error.auth');
 };
 
 // Уведомления о состоянии сети

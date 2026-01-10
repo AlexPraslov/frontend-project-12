@@ -4,6 +4,7 @@ import { setCurrentChannel } from '../../store/slices/channelsSlice';
 import AddChannelModal from '../modals/AddChannelModal';
 import RemoveChannelModal from '../modals/RemoveChannelModal';
 import RenameChannelModal from '../modals/RenameChannelModal';
+import { useTranslation } from 'react-i18next';
 
 const ChannelDropdown = ({ channelId }) => {
   const dispatch = useDispatch();
@@ -13,6 +14,7 @@ const ChannelDropdown = ({ channelId }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const buttonRef = useRef(null);
+  const { t } = useTranslation();
 
   const channels = useSelector((state) => state.channels.items);
   const currentChannelId = useSelector((state) => state.channels.currentChannelId);
@@ -54,6 +56,8 @@ const ChannelDropdown = ({ channelId }) => {
           }}
           onMouseEnter={(e) => e.currentTarget.style.color = '#007bff'}
           onMouseLeave={(e) => e.currentTarget.style.color = '#6c757d'}
+          aria-label="Управление каналом"
+          title="Управление каналом"
         >
           ⋮
         </button>
@@ -93,7 +97,7 @@ const ChannelDropdown = ({ channelId }) => {
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 >
-                  Переключиться
+                  {t('chat.channels.dropdown.switch')}
                 </button>
               )}
               
@@ -119,7 +123,7 @@ const ChannelDropdown = ({ channelId }) => {
                     onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
-                    Переименовать
+                    {t('chat.channels.dropdown.rename')}
                   </button>
                   
                   <button
@@ -143,7 +147,7 @@ const ChannelDropdown = ({ channelId }) => {
                     onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
-                    Удалить
+                    {t('chat.channels.dropdown.remove')}
                   </button>
                 </>
               )}
@@ -171,7 +175,7 @@ const ChannelDropdown = ({ channelId }) => {
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
                 onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
               >
-                + Добавить канал
+                {t('chat.channels.dropdown.addChannel')}
               </button>
             </div>
           </div>

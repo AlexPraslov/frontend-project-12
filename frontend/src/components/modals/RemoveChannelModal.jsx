@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeChannel } from '../../store/slices/channelsSlice';
 import { removeChannelMessages } from '../../store/slices/messagesSlice';
+import { useTranslation } from 'react-i18next';
 
 const RemoveChannelModal = ({ show, onHide, channelId }) => {
   const dispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);
   const channels = useSelector((state) => state.channels.items);
+  const { t } = useTranslation();
   
   const channel = channels.find(ch => ch.id === channelId);
   
@@ -61,14 +63,14 @@ const RemoveChannelModal = ({ show, onHide, channelId }) => {
             fontWeight: '600',
             color: '#212529',
           }}>
-            Удалить канал
+            {t('chat.channels.removeModal.title')}
           </h3>
         </div>
 
         {/* Содержимое */}
         <div style={{ padding: '24px' }}>
           <p style={{ margin: '0 0 16px 0', fontSize: '14px', color: '#495057' }}>
-            Уверены, что хотите удалить канал <strong>#{channel.name}</strong>?
+            {t('chat.channels.removeModal.confirm')} <strong>#{channel.name}</strong>?
           </p>
           <p style={{ 
             margin: '0 0 20px 0', 
@@ -79,7 +81,7 @@ const RemoveChannelModal = ({ show, onHide, channelId }) => {
             borderRadius: '6px',
             border: '1px solid #f5c6cb',
           }}>
-            ⚠️ Все сообщения в этом канале будут удалены безвозвратно!
+            ⚠️ {t('chat.channels.removeModal.warning')}
           </p>
           {!channel.removable && (
             <div style={{ 
@@ -91,7 +93,7 @@ const RemoveChannelModal = ({ show, onHide, channelId }) => {
               color: '#856404',
               marginBottom: '20px',
             }}>
-              ⚠️ Этот канал нельзя удалить (системный канал)
+              ⚠️ {t('chat.channels.removeModal.systemChannel')}
             </div>
           )}
         </div>
@@ -132,12 +134,13 @@ const RemoveChannelModal = ({ show, onHide, channelId }) => {
               }
             }}
           >
-            Отменить
+            {t('chat.channels.removeModal.cancel')}
           </button>
           <button
             type="button"
             onClick={handleSubmit}
             disabled={!channel.removable || submitting}
+            className="btn-danger"
             style={{
               padding: '8px 20px',
               backgroundColor: submitting ? '#6c757d' : '#dc3545',
@@ -161,7 +164,7 @@ const RemoveChannelModal = ({ show, onHide, channelId }) => {
               }
             }}
           >
-            {submitting ? 'Удаление...' : 'Удалить'}
+            {submitting ? t('chat.channels.removeModal.loading') : t('chat.channels.removeModal.submit')}
           </button>
         </div>
       </div>
