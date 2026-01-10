@@ -17,8 +17,8 @@ const LoginPage = () => {
   }, [isAuthenticated, navigate]);
 
   const initialValues = {
-    username: 'admin',
-    password: 'admin',
+    username: '',
+    password: '',
   };
 
   const validationSchema = Yup.object({
