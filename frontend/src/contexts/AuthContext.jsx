@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }) => {
       if (error.response?.status === 409) {
         return {
           success: false,
-          message: 'Пользователь с таким именем уже существует'
+          message: 'Такой пользователь уже существует'
         };
       }
       return {
