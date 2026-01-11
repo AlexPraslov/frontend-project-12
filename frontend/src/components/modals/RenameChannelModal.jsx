@@ -1,4 +1,4 @@
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,6 +19,8 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
       .min(3, t('chat.channels.addModal.lengthError'))
       .max(20, t('chat.channels.addModal.lengthError'))
       .test('unique', t('chat.channels.addModal.uniqueError'), (value) => {
+        // Разрешаем текущее имя канала
+        if (value === channel?.name) return true;
         return !channels.some(ch =>
           ch.id !== channelId && ch.name.toLowerCase() === value.toLowerCase()
         );
@@ -31,7 +33,6 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
 
     setSubmitting(true);
     try {
-      // Фильтруем профанацию перед отправкой
       const filteredName = filterProfanity(values.name);
       await dispatch(renameChannel({ channelId, name: filteredName })).unwrap();
       resetForm();
@@ -43,7 +44,6 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
     }
   };
 
-  // Обработка нажатия Enter в форме
   const handleKeyDown = (e, submitForm) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -75,7 +75,6 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
         boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
         overflow: 'hidden',
       }}>
-        {/* Заголовок */}
         <div style={{
           padding: '20px 24px',
           borderBottom: '1px solid #e9ecef',
@@ -91,17 +90,14 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
           </h3>
         </div>
 
-        {/* Форма */}
         <Formik
           initialValues={{ name: channel.name }}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
+          enableReinitialize={true}
         >
-          {({ isValid, dirty, handleSubmit, errors, touched, submitForm }) => (
-            <Form 
-              onSubmit={handleSubmit}
-              onKeyDown={(e) => handleKeyDown(e, submitForm)}
-            >
+          {({ isValid, handleSubmit: formikSubmit, submitForm }) => (
+            <Form>
               <div style={{ padding: '24px' }}>
                 <div style={{ marginBottom: '8px' }}>
                   <label
@@ -138,26 +134,27 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
                       e.target.style.borderColor = '#ced4da';
                       e.target.style.boxShadow = 'none';
                     }}
+                    onKeyDown={(e) => handleKeyDown(e, submitForm)}
                   />
-
-                  {/* Подсказка при валидации */}
-                  {errors.name && touched.name && (
-                    <div style={{
-                      color: '#dc3545',
-                      fontSize: '13px',
-                      marginTop: '8px',
-                      padding: '8px 12px',
-                      backgroundColor: '#f8d7da',
-                      borderRadius: '4px',
-                      border: '1px solid #f5c6cb',
-                    }}>
-                      {errors.name}
-                    </div>
-                  )}
+                  
+                  <ErrorMessage name="name">
+                    {msg => (
+                      <div style={{
+                        color: '#dc3545',
+                        fontSize: '13px',
+                        marginTop: '8px',
+                        padding: '8px 12px',
+                        backgroundColor: '#f8d7da',
+                        borderRadius: '4px',
+                        border: '1px solid #f5c6cb',
+                      }}>
+                        {msg}
+                      </div>
+                    )}
+                  </ErrorMessage>
                 </div>
               </div>
 
-              {/* Кнопки */}
               <div style={{
                 padding: '16px 24px',
                 borderTop: '1px solid #e9ecef',
@@ -186,19 +183,20 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
                   {t('common.cancel')}
                 </button>
                 <button
-                  type="submit"
-                  disabled={!isValid || !dirty || submitting}
+                  type="button"  // ИЗМЕНЕНО: был type="submit", стал type="button"
+                  onClick={submitForm}  // ИЗМЕНЕНО: явный вызов submitForm
+                  disabled={!isValid || submitting}
                   style={{
                     padding: '8px 20px',
                     backgroundColor: submitting ? '#6c757d' : '#007bff',
                     color: 'white',
                     border: 'none',
                     borderRadius: '6px',
-                    cursor: (!isValid || !dirty || submitting) ? 'not-allowed' : 'pointer',
+                    cursor: (!isValid || submitting) ? 'not-allowed' : 'pointer',
                     fontSize: '14px',
                     fontWeight: '500',
                     transition: 'all 0.2s',
-                    opacity: (!isValid || !dirty) ? 0.5 : 1,
+                    opacity: !isValid ? 0.5 : 1,
                   }}
                 >
                   {submitting ? t('chat.channels.renameModal.loading') : t('chat.channels.renameModal.submit')}

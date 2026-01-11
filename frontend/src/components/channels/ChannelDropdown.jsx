@@ -44,6 +44,7 @@ const ChannelDropdown = ({ channelId }) => {
           type="button"
           onClick={(e) => {
             e.stopPropagation();
+            e.preventDefault();
             setDropdownOpen(!dropdownOpen);
           }}
           style={{
@@ -61,6 +62,14 @@ const ChannelDropdown = ({ channelId }) => {
             width: '30px',
             height: '30px',
           }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = '#007bff';
+            e.currentTarget.style.backgroundColor = '#f0f0f0';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = '#6c757d';
+            e.currentTarget.style.backgroundColor = 'transparent';
+          }}
           aria-label="Управление каналом"
           title="Управление каналом"
         >
@@ -73,7 +82,7 @@ const ChannelDropdown = ({ channelId }) => {
             style={{
               position: 'absolute',
               top: '100%',
-              right: '0',  // Изменено с left: '0' на right: '0'
+              right: '0',
               zIndex: 1000,
               backgroundColor: 'white',
               border: '1px solid rgba(0,0,0,.15)',
