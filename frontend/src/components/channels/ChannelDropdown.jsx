@@ -39,7 +39,10 @@ const ChannelDropdown = ({ channelId }) => {
 
   return (
     <>
-      <div style={{ position: 'relative', display: 'inline-block' }}>
+      <div style={{ 
+        position: 'relative',  // ← КРИТИЧЕСКИ ВАЖНО!
+        display: 'inline-block',
+      }}>
         <button
           ref={buttonRef}
           type="button"
@@ -72,6 +75,20 @@ const ChannelDropdown = ({ channelId }) => {
           title="Управление каналом"
         >
           <span style={{ fontSize: '20px', fontWeight: 'bold' }}>⋮</span>
+          {/* Для Playwright тестов */}
+          <span style={{ 
+            position: 'absolute',
+            width: '1px',
+            height: '1px',
+            padding: 0,
+            margin: '-1px',
+            overflow: 'hidden',
+            clip: 'rect(0, 0, 0, 0)',
+            whiteSpace: 'nowrap',
+            border: 0,
+          }}>
+            Управление каналом
+          </span>
         </button>
 
         {dropdownOpen && (
@@ -81,7 +98,7 @@ const ChannelDropdown = ({ channelId }) => {
               position: 'absolute',
               top: '100%',
               left: '0',
-              zIndex: 1000,
+              zIndex: 1000,  // ← ВАЖНО: z-index 1000 как в демо
               backgroundColor: 'white',
               border: '1px solid rgba(0,0,0,.15)',
               borderRadius: '4px',
