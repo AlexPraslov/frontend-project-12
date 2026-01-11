@@ -72,21 +72,6 @@ const ChannelDropdown = ({ channelId }) => {
           title="Управление каналом"
         >
           <span style={{ fontSize: '20px', fontWeight: 'bold' }}>⋮</span>
-          {/* Скрытый текст для Playwright тестов - ДОЛЖЕН БЫТЬ */}
-          <span style={{
-            position: 'absolute',
-            width: '1px',
-            height: '1px',
-            padding: 0,
-            margin: '-1px',
-            overflow: 'hidden',
-            clip: 'rect(0, 0, 0, 0)',
-            whiteSpace: 'nowrap',
-            border: 0,
-            visibility: 'hidden'
-          }}>
-            Управление каналом
-          </span>
         </button>
 
         {dropdownOpen && (
@@ -96,7 +81,7 @@ const ChannelDropdown = ({ channelId }) => {
               position: 'absolute',
               top: '100%',
               left: '0',
-              zIndex: 9999,
+              zIndex: 1000,
               backgroundColor: 'white',
               border: '1px solid rgba(0,0,0,.15)',
               borderRadius: '4px',

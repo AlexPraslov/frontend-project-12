@@ -104,7 +104,10 @@ const ChannelsList = () => {
             </div>
             
             <div 
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
               style={{ 
                 marginLeft: '10px',
                 flexShrink: 0,
