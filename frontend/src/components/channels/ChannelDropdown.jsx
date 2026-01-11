@@ -72,34 +72,22 @@ const ChannelDropdown = ({ channelId }) => {
           title="Управление каналом"
         >
           <span style={{ fontSize: '20px', fontWeight: 'bold' }}>⋮</span>
-          {/* Скрытый текст для тестов */}
-          <span style={{
-            position: 'absolute',
-            width: '1px',
-            height: '1px',
-            padding: 0,
-            margin: '-1px',
-            overflow: 'hidden',
-            clip: 'rect(0, 0, 0, 0)',
-            whiteSpace: 'nowrap',
-            border: 0,
-            visibility: 'hidden'
-          }}>
-            Управление каналом
-          </span>
         </button>
 
         {dropdownOpen && (
           <div 
             ref={dropdownRef}
             style={{
-              position: 'fixed',
+              position: 'absolute',
+              top: '100%',
+              left: '0',
               zIndex: 9999,
               backgroundColor: 'white',
               border: '1px solid rgba(0,0,0,.15)',
               borderRadius: '4px',
               boxShadow: '0 4px 12px rgba(0,0,0,.15)',
               minWidth: '200px',
+              marginTop: '5px',
             }}
           >
             <div style={{ padding: '4px 0' }}>

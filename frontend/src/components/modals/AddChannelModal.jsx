@@ -1,4 +1,4 @@
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -137,21 +137,19 @@ const AddChannelModal = ({ show, onHide }) => {
                   />
                   
                   {/* Подсказка при валидации */}
-                  <ErrorMessage name="name">
-                    {msg => (
-                      <div style={{
-                        color: '#dc3545',
-                        fontSize: '13px',
-                        marginTop: '8px',
-                        padding: '8px 12px',
-                        backgroundColor: '#f8d7da',
-                        borderRadius: '4px',
-                        border: '1px solid #f5c6cb',
-                      }}>
-                        {msg}
-                      </div>
-                    )}
-                  </ErrorMessage>
+                  {errors.name && touched.name && (
+                    <div style={{
+                      color: '#dc3545',
+                      fontSize: '13px',
+                      marginTop: '8px',
+                      padding: '8px 12px',
+                      backgroundColor: '#f8d7da',
+                      borderRadius: '4px',
+                      border: '1px solid #f5c6cb',
+                    }}>
+                      {errors.name}
+                    </div>
+                  )}
                 </div>
               </div>
 
