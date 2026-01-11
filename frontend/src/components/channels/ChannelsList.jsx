@@ -51,7 +51,7 @@ const ChannelsList = () => {
               textAlign: 'left',
               fontFamily: 'inherit',
               fontSize: 'inherit',
-              position: 'relative',  // Добавили для позиционирования dropdown
+              position: 'relative',
             }}
             onMouseEnter={(e) => {
               if (!isActive) {
@@ -103,21 +103,23 @@ const ChannelsList = () => {
               )}
             </div>
             
-            {/* Dropdown ВНУТРИ кнопки, но с stopPropagation */}
-            <div 
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
-              style={{ 
-                marginLeft: '10px',
-                flexShrink: 0,
-                position: 'relative',
-                zIndex: 2,
-              }}
-            >
-              <ChannelDropdown channelId={channel.id} />
-            </div>
+            {/* Показываем управление ТОЛЬКО для несистемных каналов */}
+            {channel.removable && (
+              <div 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                style={{ 
+                  marginLeft: '10px',
+                  flexShrink: 0,
+                  position: 'relative',
+                  zIndex: 2,
+                }}
+              >
+                <ChannelDropdown channelId={channel.id} />
+              </div>
+            )}
           </button>
         );
       })}
