@@ -22,7 +22,6 @@ const ChannelDropdown = ({ channelId }) => {
   const channel = channels.find(ch => ch.id === channelId);
   const isCurrentChannel = String(channelId) === String(currentChannelId);
 
-  // Закрываем dropdown при клике вне его
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target) &&
@@ -39,14 +38,14 @@ const ChannelDropdown = ({ channelId }) => {
 
   return (
     <>
-      <div style={{ 
-        position: 'relative',  // ← КРИТИЧЕСКИ ВАЖНО!
-        display: 'inline-block',
-      }}>
+      <div style={{ position: 'relative', display: 'inline-block' }}>
         <button
           ref={buttonRef}
           type="button"
-          onClick={() => setDropdownOpen(!dropdownOpen)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setDropdownOpen(!dropdownOpen);
+          }}
           style={{
             background: 'none',
             border: 'none',
@@ -59,36 +58,13 @@ const ChannelDropdown = ({ channelId }) => {
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
-            position: 'relative',
             width: '30px',
             height: '30px',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.color = '#007bff';
-            e.currentTarget.style.backgroundColor = '#f0f0f0';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.color = '#6c757d';
-            e.currentTarget.style.backgroundColor = 'transparent';
           }}
           aria-label="Управление каналом"
           title="Управление каналом"
         >
           <span style={{ fontSize: '20px', fontWeight: 'bold' }}>⋮</span>
-          {/* Для Playwright тестов */}
-          <span style={{ 
-            position: 'absolute',
-            width: '1px',
-            height: '1px',
-            padding: 0,
-            margin: '-1px',
-            overflow: 'hidden',
-            clip: 'rect(0, 0, 0, 0)',
-            whiteSpace: 'nowrap',
-            border: 0,
-          }}>
-            Управление каналом
-          </span>
         </button>
 
         {dropdownOpen && (
@@ -97,8 +73,8 @@ const ChannelDropdown = ({ channelId }) => {
             style={{
               position: 'absolute',
               top: '100%',
-              left: '0',
-              zIndex: 1000,  // ← ВАЖНО: z-index 1000 как в демо
+              right: '0',  // Изменено с left: '0' на right: '0'
+              zIndex: 1000,
               backgroundColor: 'white',
               border: '1px solid rgba(0,0,0,.15)',
               borderRadius: '4px',
@@ -111,7 +87,8 @@ const ChannelDropdown = ({ channelId }) => {
               {!isCurrentChannel && (
                 <button
                   type="button"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     dispatch(setCurrentChannel(channelId));
                     setDropdownOpen(false);
                   }}
@@ -124,10 +101,7 @@ const ChannelDropdown = ({ channelId }) => {
                     textAlign: 'left',
                     cursor: 'pointer',
                     fontSize: '14px',
-                    transition: 'background-color 0.2s',
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 >
                   {t('chat.channels.dropdown.switch')}
                 </button>
@@ -137,7 +111,8 @@ const ChannelDropdown = ({ channelId }) => {
                 <>
                   <button
                     type="button"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setShowRenameModal(true);
                       setDropdownOpen(false);
                     }}
@@ -150,17 +125,15 @@ const ChannelDropdown = ({ channelId }) => {
                       textAlign: 'left',
                       cursor: 'pointer',
                       fontSize: '14px',
-                      transition: 'background-color 0.2s',
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
                     {t('chat.channels.dropdown.rename')}
                   </button>
                   
                   <button
                     type="button"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setShowRemoveModal(true);
                       setDropdownOpen(false);
                     }}
@@ -174,10 +147,7 @@ const ChannelDropdown = ({ channelId }) => {
                       cursor: 'pointer',
                       fontSize: '14px',
                       color: '#dc3545',
-                      transition: 'background-color 0.2s',
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
                     {t('chat.channels.dropdown.remove')}
                   </button>
@@ -188,7 +158,8 @@ const ChannelDropdown = ({ channelId }) => {
               
               <button
                 type="button"
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   setShowAddModal(true);
                   setDropdownOpen(false);
                 }}
@@ -202,10 +173,7 @@ const ChannelDropdown = ({ channelId }) => {
                   cursor: 'pointer',
                   fontSize: '14px',
                   color: '#28a745',
-                  transition: 'background-color 0.2s',
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
               >
                 {t('chat.channels.dropdown.addChannel')}
               </button>
@@ -214,22 +182,9 @@ const ChannelDropdown = ({ channelId }) => {
         )}
       </div>
 
-      <AddChannelModal 
-        show={showAddModal} 
-        onHide={() => setShowAddModal(false)} 
-      />
-      
-      <RemoveChannelModal 
-        show={showRemoveModal} 
-        onHide={() => setShowRemoveModal(false)}
-        channelId={channelId}
-      />
-      
-      <RenameChannelModal 
-        show={showRenameModal} 
-        onHide={() => setShowRenameModal(false)}
-        channelId={channelId}
-      />
+      <AddChannelModal show={showAddModal} onHide={() => setShowAddModal(false)} />
+      <RemoveChannelModal show={showRemoveModal} onHide={() => setShowRemoveModal(false)} channelId={channelId} />
+      <RenameChannelModal show={showRenameModal} onHide={() => setShowRenameModal(false)} channelId={channelId} />
     </>
   );
 };

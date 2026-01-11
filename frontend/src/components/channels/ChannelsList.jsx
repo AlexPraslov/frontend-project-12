@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { setCurrentChannel } from '../../store/slices/channelsSlice';
 import ChannelDropdown from './ChannelDropdown';
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 
 const ChannelsList = () => {
   const dispatch = useDispatch();
@@ -32,37 +32,28 @@ const ChannelsList = () => {
         const isActive = normalizedCurrentId === normalizedChannelId;
 
         return (
-          <button
-            key={channel.id}
-            type="button"
-            onClick={() => dispatch(setCurrentChannel(channel.id))}
-            style={{
-              padding: '12px 15px',
-              borderBottom: '1px solid #f0f0f0',
-              backgroundColor: isActive ? '#007bff' : 'transparent',
-              color: isActive ? 'white' : '#333',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              position: 'relative',
-              width: '100%',
-              border: 'none',
-              textAlign: 'left',
-              fontFamily: 'inherit',
-              fontSize: 'inherit',
-            }}
-            onMouseEnter={(e) => {
-              if (!isActive) {
-                e.currentTarget.style.backgroundColor = '#f0f0f0';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isActive) {
-                e.currentTarget.style.backgroundColor = 'transparent';
-              }
-            }}
+          <div key={channel.id} style={{ 
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            padding: '12px 15px',
+            borderBottom: '1px solid #f0f0f0',
+            backgroundColor: isActive ? '#007bff' : 'transparent',
+            color: isActive ? 'white' : '#333',
+            cursor: 'pointer',
+            transition: 'background-color 0.2s',
+          }}
+          onClick={() => dispatch(setCurrentChannel(channel.id))}
+          onMouseEnter={(e) => {
+            if (!isActive) {
+              e.currentTarget.style.backgroundColor = '#f0f0f0';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isActive) {
+              e.currentTarget.style.backgroundColor = 'transparent';
+            }
+          }}
           >
             <div style={{ 
               display: 'flex', 
@@ -112,12 +103,12 @@ const ChannelsList = () => {
                 marginLeft: '10px',
                 flexShrink: 0,
                 position: 'relative',
-                zIndex: 1,
+                zIndex: 2,
               }}
             >
               <ChannelDropdown channelId={channel.id} />
             </div>
-          </button>
+          </div>
         );
       })}
     </div>
