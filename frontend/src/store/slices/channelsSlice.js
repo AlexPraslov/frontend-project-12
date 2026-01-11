@@ -139,6 +139,7 @@ const channelsSlice = createSlice({
         if (index !== -1) {
           state.items[index] = updatedChannel;
         }
+        // НЕ меняем currentChannelId! Остаемся в том же канале
       });
   },
 });
