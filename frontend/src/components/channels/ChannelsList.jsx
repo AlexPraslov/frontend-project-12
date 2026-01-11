@@ -25,7 +25,7 @@ const ChannelsList = () => {
   }
 
   return (
-    <div ref={containerRef} style={{ flex: 1, overflowY: 'auto', position: 'relative' }}>
+    <div ref={containerRef} style={{ flex: 1, overflowY: 'auto' }}>
       {items.map((channel) => {
         const normalizedCurrentId = String(currentChannelId);
         const normalizedChannelId = String(channel.id);
@@ -35,78 +35,96 @@ const ChannelsList = () => {
           <div key={channel.id} style={{ 
             position: 'relative',
             display: 'flex',
-            alignItems: 'center',
-            padding: '12px 15px',
-            borderBottom: '1px solid #f0f0f0',
-            backgroundColor: isActive ? '#007bff' : 'transparent',
-            color: isActive ? 'white' : '#333',
-            cursor: 'pointer',
-            transition: 'background-color 0.2s',
-          }}
-          onClick={() => dispatch(setCurrentChannel(channel.id))}
-          onMouseEnter={(e) => {
-            if (!isActive) {
-              e.currentTarget.style.backgroundColor = '#f0f0f0';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!isActive) {
-              e.currentTarget.style.backgroundColor = 'transparent';
-            }
-          }}
-          >
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center',
-              flex: 1,
-              overflow: 'hidden',
-              minWidth: 0,
-            }}>
-              <span style={{ 
-                marginRight: '10px', 
-                fontWeight: 'bold',
-                color: isActive ? 'white' : '#666',
-                flexShrink: 0,
-              }}>
-                #
-              </span>
-              <span style={{ 
+          }}>
+            <button
+              type="button"
+              onClick={() => dispatch(setCurrentChannel(channel.id))}
+              style={{
+                padding: '12px 15px',
+                borderBottom: '1px solid #f0f0f0',
+                backgroundColor: isActive ? '#007bff' : 'transparent',
+                color: isActive ? 'white' : '#333',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
                 flex: 1,
-                fontSize: '14px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                minWidth: 0,
-              }}>
-                {channel.name}
-              </span>
-              {!channel.removable && (
-                <span style={{ 
-                  fontSize: '11px', 
-                  opacity: 0.7,
-                  color: isActive ? 'rgba(255,255,255,0.8)' : '#666',
-                  marginLeft: '8px',
-                  whiteSpace: 'nowrap',
-                  flexShrink: 0,
-                }}>
-                  системный
-                </span>
-              )}
-            </div>
-            
-            <div 
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
+                border: 'none',
+                textAlign: 'left',
+                fontFamily: 'inherit',
+                fontSize: 'inherit',
               }}
-              style={{ 
-                marginLeft: '10px',
-                flexShrink: 0,
-                position: 'relative',
-                zIndex: 2,
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.backgroundColor = '#f0f0f0';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }
               }}
             >
-              <ChannelDropdown channelId={channel.id} />
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center',
+                flex: 1,
+                overflow: 'hidden',
+                minWidth: 0,
+              }}>
+                <span style={{ 
+                  marginRight: '10px', 
+                  fontWeight: 'bold',
+                  color: isActive ? 'white' : '#666',
+                  flexShrink: 0,
+                }}>
+                  #
+                </span>
+                <span style={{ 
+                  flex: 1,
+                  fontSize: '14px',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  minWidth: 0,
+                }}>
+                  {channel.name}
+                </span>
+                {!channel.removable && (
+                  <span style={{ 
+                    fontSize: '11px', 
+                    opacity: 0.7,
+                    color: isActive ? 'rgba(255,255,255,0.8)' : '#666',
+                    marginLeft: '8px',
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0,
+                  }}>
+                    системный
+                  </span>
+                )}
+              </div>
+            </button>
+            
+            {/* Dropdown контейнер ВНЕ кнопки, но в том же div */}
+            <div 
+              style={{ 
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0 10px',
+                borderBottom: '1px solid #f0f0f0',
+                backgroundColor: isActive ? '#007bff' : 'transparent',
+              }}
+            >
+              <div 
+                onClick={(e) => e.stopPropagation()}
+                style={{ 
+                  position: 'relative',
+                  zIndex: 2,
+                }}
+              >
+                <ChannelDropdown channelId={channel.id} />
+              </div>
             </div>
           </div>
         );
