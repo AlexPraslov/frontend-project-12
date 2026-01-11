@@ -93,11 +93,8 @@ const AddChannelModal = ({ show, onHide }) => {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ isValid, dirty, handleSubmit, errors, touched, submitForm }) => (
-            <Form 
-              onSubmit={handleSubmit}
-              onKeyDown={(e) => handleKeyDown(e, submitForm)}
-            >
+          {({ isValid, dirty, handleSubmit: formikSubmit, errors, touched, submitForm }) => (
+            <Form>
               <div style={{ padding: '24px' }}>
                 <div style={{ marginBottom: '8px' }}>
                   <label 
@@ -134,6 +131,7 @@ const AddChannelModal = ({ show, onHide }) => {
                       e.target.style.borderColor = '#ced4da';
                       e.target.style.boxShadow = 'none';
                     }}
+                    onKeyDown={(e) => handleKeyDown(e, submitForm)}
                   />
                   
                   {/* Подсказка при валидации */}
@@ -181,7 +179,8 @@ const AddChannelModal = ({ show, onHide }) => {
                   {t('common.cancel')}
                 </button>
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={submitForm}
                   disabled={!isValid || !dirty || submitting}
                   style={{
                     padding: '8px 16px',

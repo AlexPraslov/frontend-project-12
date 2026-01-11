@@ -183,8 +183,8 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
                   {t('common.cancel')}
                 </button>
                 <button
-                  type="button"  // ИЗМЕНЕНО: был type="submit", стал type="button"
-                  onClick={submitForm}  // ИЗМЕНЕНО: явный вызов submitForm
+                  type="button"
+                  onClick={submitForm}
                   disabled={!isValid || submitting}
                   style={{
                     padding: '8px 20px',

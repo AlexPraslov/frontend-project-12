@@ -103,23 +103,21 @@ const ChannelsList = () => {
               )}
             </div>
             
-            {/* Показываем управление ТОЛЬКО для несистемных каналов */}
-            {channel.removable && (
-              <div 
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-                style={{ 
-                  marginLeft: '10px',
-                  flexShrink: 0,
-                  position: 'relative',
-                  zIndex: 2,
-                }}
-              >
-                <ChannelDropdown channelId={channel.id} />
-              </div>
-            )}
+            {/* ИЗМЕНЕНИЕ: Всегда показываем кнопку управления, как в демо */}
+            <div 
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              style={{ 
+                marginLeft: '10px',
+                flexShrink: 0,
+                position: 'relative',
+                zIndex: 2,
+              }}
+            >
+              <ChannelDropdown channelId={channel.id} />
+            </div>
           </button>
         );
       })}
