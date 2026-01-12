@@ -1,6 +1,6 @@
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addChannel } from '../../store/slices/channelsSlice';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +11,16 @@ const AddChannelModal = ({ show, onHide }) => {
   const dispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);
   const channels = useSelector((state) => state.channels.items);
+  const inputRef = useRef(null);
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (show && inputRef.current) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+    }
+  }, [show]);
 
   const validationSchema = Yup.object({
     name: Yup.string()
@@ -59,15 +68,17 @@ const AddChannelModal = ({ show, onHide }) => {
                   {({ field }) => (
                     <BSForm.Control
                       {...field}
+                      ref={inputRef}
                       type="text"
                       autoFocus
                       isInvalid={touched.name && !!errors.name}
                       onKeyDown={(e) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
+                        if (e.key === 'Enter' && !e.shiftKey && isValid && dirty) {
                           e.preventDefault();
                           submitForm();
                         }
                       }}
+                      placeholder={t('chat.channels.addModal.name')}
                     />
                   )}
                 </Field>
@@ -76,9 +87,6 @@ const AddChannelModal = ({ show, onHide }) => {
                     {errors.name}
                   </BSForm.Control.Feedback>
                 )}
-                <BSForm.Text className="text-muted">
-                  {t('chat.channels.addModal.hint')}
-                </BSForm.Text>
               </BSForm.Group>
             </Modal.Body>
             

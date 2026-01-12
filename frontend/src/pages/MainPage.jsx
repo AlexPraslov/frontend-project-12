@@ -6,7 +6,6 @@ import MessagesList from '../components/messages/MessagesList';
 import AddChannelModal from '../components/modals/AddChannelModal';
 import { useTranslation } from 'react-i18next';
 import { Container, Row, Col, Button } from 'react-bootstrap';
-import { Plus } from 'react-bootstrap-icons';
 
 const MainPage = () => {
   const dispatch = useDispatch();
@@ -31,11 +30,12 @@ const MainPage = () => {
                 variant="success"
                 size="sm"
                 onClick={() => setShowAddModal(true)}
-                className="rounded-circle p-0"
-                style={{ width: '30px', height: '30px' }}
+                className="rounded-circle px-0 py-0 d-flex align-items-center justify-content-center"
+                style={{ width: '32px', height: '32px', fontSize: '18px', fontWeight: 'bold' }}
+                aria-label={t('chat.channels.addButton')}
                 title={t('chat.channels.addButton')}
               >
-                <Plus size={16} />
+                +
               </Button>
             </div>
             <div className="flex-grow-1">

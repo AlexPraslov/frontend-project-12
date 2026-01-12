@@ -1,12 +1,11 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentChannel } from '../../store/slices/channelsSlice';
 import AddChannelModal from '../modals/AddChannelModal';
 import RemoveChannelModal from '../modals/RemoveChannelModal';
 import RenameChannelModal from '../modals/RenameChannelModal';
 import { useTranslation } from 'react-i18next';
-import { Dropdown, Button } from 'react-bootstrap';
-import { ThreeDotsVertical } from 'react-bootstrap-icons';
+import { Dropdown } from 'react-bootstrap';
 
 const ChannelDropdown = ({ channelId }) => {
   const dispatch = useDispatch();
@@ -30,13 +29,14 @@ const ChannelDropdown = ({ channelId }) => {
           variant="link" 
           className="text-muted p-0 border-0"
           id={`dropdown-channel-${channelId}`}
+          bsPrefix="btn"
+          title="Управление каналом"
+          aria-label="Управление каналом"
         >
-          <ThreeDotsVertical size={20} />
+          <span className="fs-4" style={{ lineHeight: '0.5' }}>⋮</span>
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-          {/* Убрана кнопка "Переключиться" как просил ревьюер */}
-          
           {channel.removable && (
             <>
               <Dropdown.Item 

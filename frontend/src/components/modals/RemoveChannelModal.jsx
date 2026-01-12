@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { removeChannel } from '../../store/slices/channelsSlice';
 import { removeChannelMessages } from '../../store/slices/messagesSlice';
 import { useTranslation } from 'react-i18next';
+import { Modal, Button } from 'react-bootstrap';
 
 const RemoveChannelModal = ({ show, onHide, channelId }) => {
   const dispatch = useDispatch();
@@ -30,145 +31,48 @@ const RemoveChannelModal = ({ show, onHide, channelId }) => {
   if (!show || !channel) return null;
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 10000,
-      fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
-    }}>
-      <div style={{
-        backgroundColor: 'white',
-        borderRadius: '12px',
-        width: '90%',
-        maxWidth: '400px',
-        boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
-        overflow: 'hidden',
-      }}>
-        {/* Заголовок */}
-        <div style={{
-          padding: '20px 24px',
-          borderBottom: '1px solid #e9ecef',
-          backgroundColor: '#f8f9fa',
-        }}>
-          <h3 style={{
-            margin: 0,
-            fontSize: '18px',
-            fontWeight: '600',
-            color: '#212529',
-          }}>
-            {t('chat.channels.removeModal.title')}
-          </h3>
+    <Modal show={show} onHide={onHide} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>{t('chat.channels.removeModal.title')}</Modal.Title>
+      </Modal.Header>
+      
+      <Modal.Body>
+        <p>
+          {t('chat.channels.removeModal.confirm')} <strong>#{channel.name}</strong>?
+        </p>
+        <div className="alert alert-danger">
+          ⚠️ {t('chat.channels.removeModal.warning')}
         </div>
+        {!channel.removable && (
+          <div className="alert alert-warning">
+            ⚠️ {t('chat.channels.removeModal.systemChannel')}
+          </div>
+        )}
+      </Modal.Body>
 
-        {/* Содержимое */}
-        <div style={{ padding: '24px' }}>
-          <p style={{ margin: '0 0 16px 0', fontSize: '14px', color: '#495057' }}>
-            {t('chat.channels.removeModal.confirm')} <strong>#{channel.name}</strong>?
-          </p>
-          <p style={{ 
-            margin: '0 0 20px 0', 
-            fontSize: '13px', 
-            color: '#dc3545',
-            padding: '12px',
-            backgroundColor: '#f8d7da',
-            borderRadius: '6px',
-            border: '1px solid #f5c6cb',
-          }}>
-            ⚠️ {t('chat.channels.removeModal.warning')}
-          </p>
-          {!channel.removable && (
-            <div style={{ 
-              padding: '12px',
-              backgroundColor: '#fff3cd',
-              borderRadius: '6px',
-              border: '1px solid #ffeaa7',
-              fontSize: '13px',
-              color: '#856404',
-              marginBottom: '20px',
-            }}>
-              ⚠️ {t('chat.channels.removeModal.systemChannel')}
-            </div>
-          )}
-        </div>
-
-        {/* Кнопки */}
-        <div style={{
-          padding: '16px 24px',
-          borderTop: '1px solid #e9ecef',
-          backgroundColor: '#f8f9fa',
-          display: 'flex',
-          justifyContent: 'flex-end',
-          gap: '10px',
-        }}>
-          <button
-            type="button"
-            onClick={onHide}
-            disabled={submitting}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: '#6c757d',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: submitting ? 'not-allowed' : 'pointer',
-              fontSize: '14px',
-              fontWeight: '500',
-              transition: 'all 0.2s',
-              opacity: submitting ? 0.7 : 1,
-            }}
-            onMouseEnter={(e) => {
-              if (!submitting) {
-                e.currentTarget.style.backgroundColor = '#5a6268';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!submitting) {
-                e.currentTarget.style.backgroundColor = '#6c757d';
-              }
-            }}
-          >
-            {t('chat.channels.removeModal.cancel')}
-          </button>
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={!channel.removable || submitting}
-            className="btn-danger"
-            style={{
-              padding: '8px 20px',
-              backgroundColor: submitting ? '#6c757d' : '#dc3545',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: (!channel.removable || submitting) ? 'not-allowed' : 'pointer',
-              fontSize: '14px',
-              fontWeight: '500',
-              transition: 'all 0.2s',
-              opacity: !channel.removable ? 0.5 : 1,
-            }}
-            onMouseEnter={(e) => {
-              if (channel.removable && !submitting) {
-                e.currentTarget.style.backgroundColor = '#c82333';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (channel.removable && !submitting) {
-                e.currentTarget.style.backgroundColor = '#dc3545';
-              }
-            }}
-          >
-            {submitting ? t('chat.channels.removeModal.loading') : t('chat.channels.removeModal.submit')}
-          </button>
-        </div>
-      </div>
-    </div>
+      <Modal.Footer>
+        <Button
+          variant="secondary"
+          onClick={onHide}
+          disabled={submitting}
+        >
+          {t('chat.channels.removeModal.cancel')}
+        </Button>
+        <Button
+          variant="danger"
+          onClick={handleSubmit}
+          disabled={!channel.removable || submitting}
+          className="btn-danger"
+        >
+          {submitting ? (
+            <>
+              <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              {t('chat.channels.removeModal.loading')}
+            </>
+          ) : t('chat.channels.removeModal.submit')}
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 
