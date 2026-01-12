@@ -34,23 +34,29 @@ const ChannelsList = () => {
         return (
           <div
             key={channel.id}
-            className={`d-flex justify-content-between align-items-start px-3 py-2 border-bottom ${isActive ? 'bg-primary text-white' : 'bg-white'}`}
+            className="d-flex align-items-center justify-content-between border-bottom"
             style={{ 
-              cursor: 'pointer',
-              minHeight: '56px'
-            }}
-            onClick={() => dispatch(setCurrentChannel(channel.id))}
-            onMouseEnter={(e) => {
-              if (!isActive) e.currentTarget.style.backgroundColor = '#f8f9fa';
-            }}
-            onMouseLeave={(e) => {
-              if (!isActive) e.currentTarget.style.backgroundColor = 'white';
+              minHeight: '44px',
+              position: 'relative'
             }}
           >
-            {/* Левая часть - название канала */}
-            <div 
-              className="d-flex align-items-center overflow-hidden flex-grow-1"
-              style={{ minWidth: 0 }}
+            {/* Кнопка канала - ЗАНИМАЕТ ВСЮ ШИРИНУ КРОМЕ МЕСТА ДЛЯ ⋮ */}
+            <button
+              type="button"
+              onClick={() => dispatch(setCurrentChannel(channel.id))}
+              className={`d-flex align-items-center px-3 py-2 border-0 text-start flex-grow-1 ${isActive ? 'bg-primary text-white' : 'bg-white'}`}
+              style={{ 
+                cursor: 'pointer',
+                minHeight: '44px',
+                flex: '1 1 auto',
+                minWidth: 0
+              }}
+              onMouseEnter={(e) => {
+                if (!isActive) e.currentTarget.style.backgroundColor = '#f8f9fa';
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) e.currentTarget.style.backgroundColor = 'white';
+              }}
             >
               <span className={`me-2 ${isActive ? 'text-white' : 'text-muted'}`}>
                 #
@@ -58,17 +64,18 @@ const ChannelsList = () => {
               <span className="text-truncate" style={{ fontSize: '14px' }}>
                 {channel.name}
               </span>
-            </div>
+            </button>
             
-            {/* Правая часть - кнопка управления (⋮) */}
-            {/* ОТДЕЛЬНО от кликабельной области канала */}
+            {/* Кнопка управления (⋮) - ОТДЕЛЬНАЯ КНОПКА СПРАВА */}
             <div 
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
+              className="flex-shrink-0"
+              style={{ 
+                width: '44px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
               }}
-              className="ms-2 flex-shrink-0 pt-1"
-              style={{ zIndex: 2 }}
+              onClick={(e) => e.stopPropagation()}
             >
               <ChannelDropdown channelId={channel.id} />
             </div>

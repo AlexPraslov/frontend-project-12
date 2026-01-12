@@ -34,6 +34,7 @@ const ChannelDropdown = ({ channelId }) => {
   return (
     <>
       <div style={{ position: 'relative', display: 'inline-block' }}>
+        {/* ПРОСТАЯ КНОПКА БЕЗ ВЛОЖЕННОСТИ */}
         <button
           ref={buttonRef}
           type="button"
@@ -45,17 +46,17 @@ const ChannelDropdown = ({ channelId }) => {
           style={{
             background: 'none',
             border: 'none',
-            padding: '2px 6px',
+            padding: '6px',
             borderRadius: '4px',
             cursor: 'pointer',
             color: '#6c757d',
             fontSize: '16px',
             lineHeight: '1',
-            display: 'inline-flex',
+            width: '32px',
+            height: '32px',
+            display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            width: '30px',
-            height: '30px',
+            justifyContent: 'center'
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.color = '#007bff';
