@@ -1,4 +1,4 @@
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -44,13 +44,6 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
     }
   };
 
-  const handleKeyDown = (e, submitForm) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      submitForm();
-    }
-  };
-
   if (!show || !channel) return null;
 
   return (
@@ -65,7 +58,7 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
         onSubmit={handleSubmit}
         enableReinitialize={true}
       >
-        {({ isValid, handleSubmit: formikSubmit, submitForm }) => (
+        {({ isValid, dirty, handleSubmit: formikSubmit, errors, touched, submitForm }) => (
           <Form onSubmit={formikSubmit}>
             <Modal.Body>
               <BSForm.Group>
@@ -73,26 +66,31 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
                   {t('chat.channels.renameModal.name')}
                 </BSForm.Label>
                 <Field name="name">
-                  {({ field }) => (
-                    <BSForm.Control
-                      {...field}
-                      id="renameChannelNameInput"
-                      type="text"
-                      autoFocus
-                      isInvalid={false}
-                      onKeyDown={(e) => handleKeyDown(e, submitForm)}
-                      placeholder={t('chat.channels.renameModal.name')}
-                      aria-label="Имя канала"
-                    />
+                  {({ field, meta }) => (
+                    <>
+                      <BSForm.Control
+                        {...field}
+                        id="renameChannelNameInput"
+                        type="text"
+                        autoFocus
+                        isInvalid={meta.touched && meta.error}
+                        placeholder={t('chat.channels.renameModal.name')}
+                        aria-label="Имя канала"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            submitForm();
+                          }
+                        }}
+                      />
+                      {meta.touched && meta.error && (
+                        <div className="text-danger mt-1" style={{ fontSize: '0.875rem' }}>
+                          {meta.error}
+                        </div>
+                      )}
+                    </>
                   )}
                 </Field>
-                <ErrorMessage name="name">
-                  {msg => (
-                    <BSForm.Control.Feedback type="invalid" style={{ display: 'block' }}>
-                      {msg}
-                    </BSForm.Control.Feedback>
-                  )}
-                </ErrorMessage>
               </BSForm.Group>
             </Modal.Body>
 
@@ -107,7 +105,7 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
               <Button
                 variant="primary"
                 type="submit"
-                disabled={!isValid || submitting}
+                disabled={submitting}
               >
                 {submitting ? (
                   <>

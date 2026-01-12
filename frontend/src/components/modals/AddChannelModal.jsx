@@ -1,6 +1,6 @@
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addChannel } from '../../store/slices/channelsSlice';
 import { useTranslation } from 'react-i18next';
@@ -11,16 +11,7 @@ const AddChannelModal = ({ show, onHide }) => {
   const dispatch = useDispatch();
   const [submitting, setSubmitting] = useState(false);
   const channels = useSelector((state) => state.channels.items);
-  const inputRef = useRef(null);
   const { t } = useTranslation();
-
-  useEffect(() => {
-    if (show && inputRef.current) {
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 100);
-    }
-  }, [show]);
 
   const validationSchema = Yup.object({
     name: Yup.string()
@@ -67,30 +58,31 @@ const AddChannelModal = ({ show, onHide }) => {
                   {t('chat.channels.addModal.name')}
                 </BSForm.Label>
                 <Field name="name">
-                  {({ field }) => (
-                    <BSForm.Control
-                      {...field}
-                      ref={inputRef}
-                      id="channelNameInput"
-                      type="text"
-                      autoFocus
-                      isInvalid={touched.name && !!errors.name}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' && !e.shiftKey && isValid && dirty) {
-                          e.preventDefault();
-                          submitForm();
-                        }
-                      }}
-                      placeholder={t('chat.channels.addModal.name')}
-                      aria-label="Имя канала"
-                    />
+                  {({ field, meta }) => (
+                    <>
+                      <BSForm.Control
+                        {...field}
+                        id="channelNameInput"
+                        type="text"
+                        autoFocus
+                        isInvalid={meta.touched && meta.error}
+                        placeholder={t('chat.channels.addModal.name')}
+                        aria-label="Имя канала"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            submitForm(); // В ДЕМО Enter ВСЕГДА триггерит валидацию
+                          }
+                        }}
+                      />
+                      {meta.touched && meta.error && (
+                        <div className="text-danger mt-1" style={{ fontSize: '0.875rem' }}>
+                          {meta.error}
+                        </div>
+                      )}
+                    </>
                   )}
                 </Field>
-                {errors.name && touched.name && (
-                  <BSForm.Control.Feedback type="invalid">
-                    {errors.name}
-                  </BSForm.Control.Feedback>
-                )}
               </BSForm.Group>
             </Modal.Body>
             
@@ -105,7 +97,7 @@ const AddChannelModal = ({ show, onHide }) => {
               <Button 
                 variant="primary" 
                 type="submit"
-                disabled={!isValid || !dirty || submitting}
+                disabled={submitting}
               >
                 {submitting ? (
                   <>
