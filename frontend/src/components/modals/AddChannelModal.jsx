@@ -71,7 +71,7 @@ const AddChannelModal = ({ show, onHide }) => {
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' && !e.shiftKey) {
                             e.preventDefault();
-                            submitForm(); // В ДЕМО Enter ВСЕГДА триггерит валидацию
+                            submitForm();
                           }
                         }}
                       />

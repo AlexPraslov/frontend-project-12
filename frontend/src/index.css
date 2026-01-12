@@ -19,77 +19,37 @@ body {
   height: 100vh;
 }
 
-/* Кастомные стили для чата */
-.chat-container {
-  height: calc(100vh - 70px);
-}
-
-.channels-sidebar {
-  border-right: 1px solid #dee2e6;
-}
-
-.messages-container {
-  display: flex;
-  flex-direction: column;
-}
-
-.message-list {
-  flex: 1;
-  overflow-y: auto;
-}
-
-.message-item {
-  border-left: 3px solid #007bff;
-  background-color: #f8f9fa;
-}
-
-.message-username {
-  color: #007bff;
-  font-weight: 500;
-}
-
-.message-time {
-  font-size: 0.8rem;
-  color: #6c757d;
-}
-
-/* Стили для модальных окон */
-.modal-overlay {
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-/* Стили для выпадающего меню */
-.dropdown-toggle::after {
-  display: none !important;
-}
-
-/* Убираем outline для dropdown-toggle */
-.dropdown-toggle:focus {
-  box-shadow: none !important;
-}
-
-/* Стили для активного канала */
-.list-group-item.active {
-  background-color: #007bff !important;
-  border-color: #007bff !important;
-}
-
 /* Стили для скроллбара */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
   background: #c1c1c1;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}
+
+/* Убираем outline при фокусе, но добавляем альтернативу */
+:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* Для инпутов лучше другой стиль */
+input:focus {
+  outline: none;
+  border-color: #007bff !important;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25) !important;
 }
 
 /* Анимации */

@@ -1,7 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { setCurrentChannel } from '../../store/slices/channelsSlice';
 import ChannelDropdown from './ChannelDropdown';
-import { ListGroup, Badge } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
 const ChannelsList = () => {
@@ -26,39 +25,57 @@ const ChannelsList = () => {
   }
 
   return (
-    <ListGroup variant="flush" className="overflow-auto">
+    <div className="overflow-auto" style={{ flex: 1 }}>
       {items.map((channel) => {
         const normalizedCurrentId = String(currentChannelId);
         const normalizedChannelId = String(channel.id);
         const isActive = normalizedCurrentId === normalizedChannelId;
 
         return (
-          <ListGroup.Item
+          <div
             key={channel.id}
-            action
-            active={isActive}
+            className={`d-flex justify-content-between align-items-start px-3 py-2 border-bottom ${isActive ? 'bg-primary text-white' : 'bg-white'}`}
+            style={{ 
+              cursor: 'pointer',
+              minHeight: '56px'
+            }}
             onClick={() => dispatch(setCurrentChannel(channel.id))}
-            className="d-flex justify-content-between align-items-center rounded-0 border-0 border-bottom py-3 px-3"
+            onMouseEnter={(e) => {
+              if (!isActive) e.currentTarget.style.backgroundColor = '#f8f9fa';
+            }}
+            onMouseLeave={(e) => {
+              if (!isActive) e.currentTarget.style.backgroundColor = 'white';
+            }}
           >
-            <div className="d-flex align-items-center overflow-hidden flex-grow-1">
+            {/* Левая часть - название канала */}
+            <div 
+              className="d-flex align-items-center overflow-hidden flex-grow-1"
+              style={{ minWidth: 0 }}
+            >
               <span className={`me-2 ${isActive ? 'text-white' : 'text-muted'}`}>
                 #
               </span>
-              <span className="text-truncate">
+              <span className="text-truncate" style={{ fontSize: '14px' }}>
                 {channel.name}
               </span>
             </div>
             
+            {/* Правая часть - кнопка управления (⋮) */}
+            {/* ОТДЕЛЬНО от кликабельной области канала */}
             <div 
-              onClick={(e) => e.stopPropagation()}
-              className="ms-2 flex-shrink-0"
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+              }}
+              className="ms-2 flex-shrink-0 pt-1"
+              style={{ zIndex: 2 }}
             >
               <ChannelDropdown channelId={channel.id} />
             </div>
-          </ListGroup.Item>
+          </div>
         );
       })}
-    </ListGroup>
+    </div>
   );
 };
 
