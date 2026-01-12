@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { renameChannel } from '../../store/slices/channelsSlice';
 import { filterProfanity } from '../../utils/profanityFilter';
 import { useTranslation } from 'react-i18next';
+import { Modal, Button, Form as BSForm } from 'react-bootstrap';
 
 const RenameChannelModal = ({ show, onHide, channelId }) => {
   const dispatch = useDispatch();
@@ -19,7 +20,6 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
       .min(3, t('chat.channels.addModal.lengthError'))
       .max(20, t('chat.channels.addModal.lengthError'))
       .test('unique', t('chat.channels.addModal.uniqueError'), (value) => {
-        // Разрешаем текущее имя канала
         if (value === channel?.name) return true;
         return !channels.some(ch =>
           ch.id !== channelId && ch.name.toLowerCase() === value.toLowerCase()
@@ -54,159 +54,73 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
   if (!show || !channel) return null;
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 10000,
-      fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
-    }}>
-      <div style={{
-        backgroundColor: 'white',
-        borderRadius: '12px',
-        width: '90%',
-        maxWidth: '400px',
-        boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
-        overflow: 'hidden',
-      }}>
-        <div style={{
-          padding: '20px 24px',
-          borderBottom: '1px solid #e9ecef',
-          backgroundColor: '#f8f9fa',
-        }}>
-          <h3 style={{
-            margin: 0,
-            fontSize: '18px',
-            fontWeight: '600',
-            color: '#212529',
-          }}>
-            {t('chat.channels.renameModal.title')}
-          </h3>
-        </div>
+    <Modal show={show} onHide={onHide} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>{t('chat.channels.renameModal.title')}</Modal.Title>
+      </Modal.Header>
 
-        <Formik
-          initialValues={{ name: channel.name }}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-          enableReinitialize={true}
-        >
-          {({ isValid, handleSubmit: formikSubmit, submitForm }) => (
-            <Form>
-              <div style={{ padding: '24px' }}>
-                <div style={{ marginBottom: '8px' }}>
-                  <label
-                    htmlFor="channelName"
-                    style={{
-                      display: 'block',
-                      marginBottom: '8px',
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      color: '#495057',
-                    }}
-                  >
-                    {t('chat.channels.renameModal.name')}
-                  </label>
-                  <Field
-                    type="text"
-                    name="name"
-                    id="channelName"
-                    autoFocus
-                    aria-label="Имя канала"
-                    style={{
-                      width: '100%',
-                      padding: '10px 12px',
-                      border: '1px solid #ced4da',
-                      borderRadius: '6px',
-                      fontSize: '14px',
-                      transition: 'border-color 0.2s, box-shadow 0.2s',
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = '#80bdff';
-                      e.target.style.boxShadow = '0 0 0 0.2rem rgba(0, 123, 255, 0.25)';
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = '#ced4da';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                    onKeyDown={(e) => handleKeyDown(e, submitForm)}
-                  />
-                  
-                  <ErrorMessage name="name">
-                    {msg => (
-                      <div style={{
-                        color: '#dc3545',
-                        fontSize: '13px',
-                        marginTop: '8px',
-                        padding: '8px 12px',
-                        backgroundColor: '#f8d7da',
-                        borderRadius: '4px',
-                        border: '1px solid #f5c6cb',
-                      }}>
-                        {msg}
-                      </div>
-                    )}
-                  </ErrorMessage>
-                </div>
-              </div>
+      <Formik
+        initialValues={{ name: channel.name }}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+        enableReinitialize={true}
+      >
+        {({ isValid, handleSubmit: formikSubmit, submitForm }) => (
+          <Form onSubmit={formikSubmit}>
+            <Modal.Body>
+              <BSForm.Group>
+                <BSForm.Label htmlFor="renameChannelNameInput">
+                  {t('chat.channels.renameModal.name')}
+                </BSForm.Label>
+                <Field name="name">
+                  {({ field }) => (
+                    <BSForm.Control
+                      {...field}
+                      id="renameChannelNameInput"
+                      type="text"
+                      autoFocus
+                      isInvalid={false}
+                      onKeyDown={(e) => handleKeyDown(e, submitForm)}
+                      placeholder={t('chat.channels.renameModal.name')}
+                      aria-label="Имя канала"
+                    />
+                  )}
+                </Field>
+                <ErrorMessage name="name">
+                  {msg => (
+                    <BSForm.Control.Feedback type="invalid" style={{ display: 'block' }}>
+                      {msg}
+                    </BSForm.Control.Feedback>
+                  )}
+                </ErrorMessage>
+              </BSForm.Group>
+            </Modal.Body>
 
-              <div style={{
-                padding: '16px 24px',
-                borderTop: '1px solid #e9ecef',
-                backgroundColor: '#f8f9fa',
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '10px',
-              }}>
-                <button
-                  type="button"
-                  onClick={onHide}
-                  disabled={submitting}
-                  style={{
-                    padding: '8px 16px',
-                    backgroundColor: '#6c757d',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    cursor: submitting ? 'not-allowed' : 'pointer',
-                    fontSize: '14px',
-                    fontWeight: '500',
-                    transition: 'all 0.2s',
-                    opacity: submitting ? 0.7 : 1,
-                  }}
-                >
-                  {t('common.cancel')}
-                </button>
-                <button
-                  type="button"
-                  onClick={submitForm}
-                  disabled={!isValid || submitting}
-                  style={{
-                    padding: '8px 20px',
-                    backgroundColor: submitting ? '#6c757d' : '#007bff',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    cursor: (!isValid || submitting) ? 'not-allowed' : 'pointer',
-                    fontSize: '14px',
-                    fontWeight: '500',
-                    transition: 'all 0.2s',
-                    opacity: !isValid ? 0.5 : 1,
-                  }}
-                >
-                  {submitting ? t('chat.channels.renameModal.loading') : t('chat.channels.renameModal.submit')}
-                </button>
-              </div>
-            </Form>
-          )}
-        </Formik>
-      </div>
-    </div>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={onHide}
+                disabled={submitting}
+              >
+                {t('common.cancel')}
+              </Button>
+              <Button
+                variant="primary"
+                type="submit"
+                disabled={!isValid || submitting}
+              >
+                {submitting ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    {t('chat.channels.renameModal.loading')}
+                  </>
+                ) : t('chat.channels.renameModal.submit')}
+              </Button>
+            </Modal.Footer>
+          </Form>
+        )}
+      </Formik>
+    </Modal>
   );
 };
 

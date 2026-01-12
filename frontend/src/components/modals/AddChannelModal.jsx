@@ -63,12 +63,15 @@ const AddChannelModal = ({ show, onHide }) => {
           <Form onSubmit={formikSubmit}>
             <Modal.Body>
               <BSForm.Group>
-                <BSForm.Label>{t('chat.channels.addModal.name')}</BSForm.Label>
+                <BSForm.Label htmlFor="channelNameInput">
+                  {t('chat.channels.addModal.name')}
+                </BSForm.Label>
                 <Field name="name">
                   {({ field }) => (
                     <BSForm.Control
                       {...field}
                       ref={inputRef}
+                      id="channelNameInput"
                       type="text"
                       autoFocus
                       isInvalid={touched.name && !!errors.name}
@@ -79,6 +82,7 @@ const AddChannelModal = ({ show, onHide }) => {
                         }
                       }}
                       placeholder={t('chat.channels.addModal.name')}
+                      aria-label="Имя канала"
                     />
                   )}
                 </Field>
