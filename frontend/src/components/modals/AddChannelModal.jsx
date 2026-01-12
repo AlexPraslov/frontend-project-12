@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addChannel } from '../../store/slices/channelsSlice';
 import { useTranslation } from 'react-i18next';
 import { filterProfanity } from '../../utils/profanityFilter';
+import { Modal, Button, Form as BSForm } from 'react-bootstrap';
 
 const AddChannelModal = ({ show, onHide }) => {
   const dispatch = useDispatch();
@@ -27,7 +28,6 @@ const AddChannelModal = ({ show, onHide }) => {
   const handleSubmit = async (values, { resetForm }) => {
     setSubmitting(true);
     try {
-      // Фильтруем профанацию перед отправкой
       const filteredName = filterProfanity(values.name);
       await dispatch(addChannel(filteredName)).unwrap();
       resetForm();
@@ -39,170 +39,74 @@ const AddChannelModal = ({ show, onHide }) => {
     }
   };
 
-  // Обработка нажатия Enter в форме
-  const handleKeyDown = (e, submitForm) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      submitForm();
-    }
-  };
-
-  if (!show) return null;
-
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 10000,
-      fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
-    }}>
-      <div style={{
-        backgroundColor: 'white',
-        borderRadius: '12px',
-        width: '90%',
-        maxWidth: '400px',
-        boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
-        overflow: 'hidden',
-      }}>
-        {/* Заголовок */}
-        <div style={{
-          padding: '20px 24px',
-          borderBottom: '1px solid #e9ecef',
-          backgroundColor: '#f8f9fa',
-        }}>
-          <h3 style={{
-            margin: 0,
-            fontSize: '18px',
-            fontWeight: '600',
-            color: '#212529',
-          }}>
-            {t('chat.channels.addModal.title')}
-          </h3>
-        </div>
-
-        {/* Форма */}
-        <Formik
-          initialValues={{ name: '' }}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-        >
-          {({ isValid, dirty, handleSubmit: formikSubmit, errors, touched, submitForm }) => (
-            <Form>
-              <div style={{ padding: '24px' }}>
-                <div style={{ marginBottom: '8px' }}>
-                  <label 
-                    htmlFor="channelName" 
-                    style={{
-                      display: 'block',
-                      marginBottom: '8px',
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      color: '#495057',
-                    }}
-                  >
-                    {t('chat.channels.addModal.name')}
-                  </label>
-                  <Field
-                    type="text"
-                    name="name"
-                    id="channelName"
-                    autoFocus
-                    aria-label="Имя канала"
-                    style={{
-                      width: '100%',
-                      padding: '10px 12px',
-                      border: '1px solid #ced4da',
-                      borderRadius: '6px',
-                      fontSize: '14px',
-                      transition: 'border-color 0.2s, box-shadow 0.2s',
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = '#80bdff';
-                      e.target.style.boxShadow = '0 0 0 0.2rem rgba(0, 123, 255, 0.25)';
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = '#ced4da';
-                      e.target.style.boxShadow = 'none';
-                    }}
-                    onKeyDown={(e) => handleKeyDown(e, submitForm)}
-                  />
-                  
-                  {/* Подсказка при валидации */}
-                  {errors.name && touched.name && (
-                    <div style={{
-                      color: '#dc3545',
-                      fontSize: '13px',
-                      marginTop: '8px',
-                      padding: '8px 12px',
-                      backgroundColor: '#f8d7da',
-                      borderRadius: '4px',
-                      border: '1px solid #f5c6cb',
-                    }}>
-                      {errors.name}
-                    </div>
+    <Modal show={show} onHide={onHide} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>{t('chat.channels.addModal.title')}</Modal.Title>
+      </Modal.Header>
+      
+      <Formik
+        initialValues={{ name: '' }}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ isValid, dirty, handleSubmit: formikSubmit, errors, touched, submitForm }) => (
+          <Form onSubmit={formikSubmit}>
+            <Modal.Body>
+              <BSForm.Group>
+                <BSForm.Label>{t('chat.channels.addModal.name')}</BSForm.Label>
+                <Field name="name">
+                  {({ field }) => (
+                    <BSForm.Control
+                      {...field}
+                      type="text"
+                      autoFocus
+                      isInvalid={touched.name && !!errors.name}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          submitForm();
+                        }
+                      }}
+                    />
                   )}
-                </div>
-              </div>
-
-              {/* Кнопки */}
-              <div style={{
-                padding: '16px 24px',
-                backgroundColor: '#f8f9fa',
-                borderTop: '1px solid #e9ecef',
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '12px',
-              }}>
-                <button
-                  type="button"
-                  onClick={onHide}
-                  disabled={submitting}
-                  style={{
-                    padding: '8px 16px',
-                    backgroundColor: '#6c757d',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    fontSize: '14px',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    transition: 'background-color 0.2s',
-                  }}
-                >
-                  {t('common.cancel')}
-                </button>
-                <button
-                  type="button"
-                  onClick={submitForm}
-                  disabled={!isValid || !dirty || submitting}
-                  style={{
-                    padding: '8px 16px',
-                    backgroundColor: isValid && dirty && !submitting ? '#007bff' : '#6c757d',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '6px',
-                    fontSize: '14px',
-                    fontWeight: '500',
-                    cursor: isValid && dirty && !submitting ? 'pointer' : 'not-allowed',
-                    transition: 'background-color 0.2s',
-                    minWidth: '80px',
-                  }}
-                >
-                  {submitting ? t('chat.channels.addModal.loading') : t('chat.channels.addModal.submit')}
-                </button>
-              </div>
-            </Form>
-          )}
-        </Formik>
-      </div>
-    </div>
+                </Field>
+                {errors.name && touched.name && (
+                  <BSForm.Control.Feedback type="invalid">
+                    {errors.name}
+                  </BSForm.Control.Feedback>
+                )}
+                <BSForm.Text className="text-muted">
+                  {t('chat.channels.addModal.hint')}
+                </BSForm.Text>
+              </BSForm.Group>
+            </Modal.Body>
+            
+            <Modal.Footer>
+              <Button 
+                variant="secondary" 
+                onClick={onHide}
+                disabled={submitting}
+              >
+                {t('common.cancel')}
+              </Button>
+              <Button 
+                variant="primary" 
+                type="submit"
+                disabled={!isValid || !dirty || submitting}
+              >
+                {submitting ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    {t('chat.channels.addModal.loading')}
+                  </>
+                ) : t('chat.channels.addModal.submit')}
+              </Button>
+            </Modal.Footer>
+          </Form>
+        )}
+      </Formik>
+    </Modal>
   );
 };
 

@@ -1,66 +1,31 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useAuth } from '../../contexts/AuthContext';
 import { getSocket } from '../../socket';
 import { filterProfanity, hasProfanity } from '../../utils/profanityFilter';
-import { notifyMessageSent, notifySendMessageError, notifyOffline, notifyConnectionRestored, showWarning } from '../../utils/notifications';
+import { notifyMessageSent, notifySendMessageError, showWarning } from '../../utils/notifications';
 import { useTranslation } from 'react-i18next';
+import { Form, Button, InputGroup, Badge } from 'react-bootstrap';
+import { Send, Wifi, WifiOff } from 'react-bootstrap-icons';
 
 const MessageForm = () => {
   const [messageText, setMessageText] = useState('');
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(null);
-  const [connectionStatus, setConnectionStatus] = useState('disconnected');
-  const [wasDisconnected, setWasDisconnected] = useState(false);
-  const retryCountRef = useRef(0);
-  const maxRetries = 3;
   const { t } = useTranslation();
   const { username } = useAuth();
 
   const { currentChannelId } = useSelector((state) => state.channels);
+  
+  // Получаем состояние соединения из socket
+  const socket = getSocket();
+  const connectionStatus = socket?.connected ? 'connected' : 'disconnected';
 
-  // Мониторим состояние соединения
-  useEffect(() => {
-    const socket = getSocket();
-    if (!socket) return;
-
-    const handleConnect = () => {
-      const newStatus = 'connected';
-      setConnectionStatus(newStatus);
-      
-      // Показываем уведомление о восстановлении только если было отключение
-      if (wasDisconnected) {
-        notifyConnectionRestored();
-        setWasDisconnected(false);
-      }
-    };
-
-    const handleDisconnect = () => {
-      setConnectionStatus('disconnected');
-      setWasDisconnected(true);
-      notifyOffline();
-    };
-
-    // Устанавливаем начальный статус
-    setConnectionStatus(socket.connected ? 'connected' : 'disconnected');
-
-    socket.on('connect', handleConnect);
-    socket.on('disconnect', handleDisconnect);
-
-    return () => {
-      socket.off('connect', handleConnect);
-      socket.off('disconnect', handleDisconnect);
-    };
-  }, [wasDisconnected]);
-
-  const sendMessageViaHTTP = async (messageData, retries = maxRetries) => {
+  const sendMessageViaHTTP = async (messageData, retries = 3) => {
     try {
       const token = localStorage.getItem('token');
       
-      // Фильтруем текст сообщения перед отправкой
       const filteredBody = filterProfanity(messageData.body);
-      
-      // Проверяем, были ли отфильтрованы нецензурные слова
       const hadProfanity = hasProfanity(messageData.body);
       
       const response = await fetch('/api/v1/messages', {
@@ -82,9 +47,7 @@ const MessageForm = () => {
       }
 
       const data = await response.json();
-      retryCountRef.current = 0;
       
-      // Показываем предупреждение, если были нецензурные слова
       if (hadProfanity) {
         showWarning('notifications.warning.profanity');
       }
@@ -96,7 +59,6 @@ const MessageForm = () => {
       console.error('HTTP error:', err);
 
       if (retries > 0) {
-        console.log(`HTTP retry, attempts left: ${retries - 1}`);
         await new Promise(resolve => setTimeout(resolve, 1000));
         return sendMessageViaHTTP(messageData, retries - 1);
       }
@@ -112,7 +74,6 @@ const MessageForm = () => {
 
     setSending(true);
     setError(null);
-    retryCountRef.current = 0;
 
     try {
       const messageData = {
@@ -128,7 +89,6 @@ const MessageForm = () => {
       setError(`${errorMessage}. ${t('errors.sendMessage')}`);
       notifySendMessageError();
 
-      // Сохраняем для повторной отправки
       const unsentMessages = JSON.parse(localStorage.getItem('unsentMessages') || '[]');
       unsentMessages.push({
         text: messageText,
@@ -177,97 +137,76 @@ const MessageForm = () => {
   const hasUnsentMessages = unsentMessages.length > 0;
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div>
       {/* Статус соединения */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        marginBottom: '10px',
-        fontSize: '12px',
-        color: connectionStatus === 'connected' ? '#28a745' : '#6c757d'
-      }}>
-        <div style={{
-          width: '8px',
-          height: '8px',
-          borderRadius: '50%',
-          backgroundColor: connectionStatus === 'connected' ? '#28a745' : '#6c757d',
-          marginRight: '6px'
-        }} />
-        <span>
-          {connectionStatus === 'connected' ? t('chat.messages.connection.online') : t('chat.messages.connection.offline')}
-        </span>
+      <div className="d-flex align-items-center mb-2">
+        <Badge 
+          bg={connectionStatus === 'connected' ? 'success' : 'secondary'}
+          className="d-flex align-items-center"
+        >
+          {connectionStatus === 'connected' ? (
+            <Wifi size={12} className="me-1" />
+          ) : (
+            <WifiOff size={12} className="me-1" />
+          )}
+          {connectionStatus === 'connected' 
+            ? t('chat.messages.connection.online') 
+            : t('chat.messages.connection.offline')
+          }
+        </Badge>
       </div>
 
       {/* Ошибки */}
       {error && (
-        <div style={{
-          color: '#dc3545',
-          marginBottom: '10px',
-          padding: '10px',
-          backgroundColor: '#f8d7da',
-          borderRadius: '4px',
-          fontSize: '14px'
-        }}>
+        <Alert variant="danger" className="mb-3">
           {error}
           {hasUnsentMessages && (
-            <div style={{ marginTop: '5px' }}>
-              <button
-                type="button"
+            <div className="mt-2">
+              <Button
+                variant="outline-danger"
+                size="sm"
                 onClick={retryUnsentMessages}
-                style={{
-                  padding: '5px 10px',
-                  fontSize: '12px',
-                  backgroundColor: '#dc3545',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '3px',
-                  cursor: 'pointer'
-                }}
               >
                 {t('chat.messages.unsent', { count: unsentMessages.length })}
-              </button>
+              </Button>
             </div>
           )}
-        </div>
+        </Alert>
       )}
 
       {/* Форма ввода */}
-      <div style={{ display: 'flex', gap: '10px' }}>
-        <input
-          type="text"
-          value={messageText}
-          onChange={(e) => setMessageText(e.target.value)}
-          placeholder={t('chat.messages.placeholder')}
-          aria-label="Новое сообщение"
-          style={{
-            flex: 1,
-            padding: '10px 15px',
-            border: '1px solid #ced4da',
-            borderRadius: '20px',
-            fontSize: '14px',
-            outline: 'none'
-          }}
-          disabled={sending}
-        />
-        <button
-          type="submit"
-          disabled={!messageText.trim() || sending}
-          style={{
-            padding: '10px 20px',
-            backgroundColor: sending ? '#6c757d' : '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '20px',
-            cursor: sending ? 'not-allowed' : 'pointer',
-            fontSize: '14px',
-            fontWeight: 'bold',
-            minWidth: '100px'
-          }}
-        >
-          {sending ? t('chat.messages.sending') : t('chat.messages.send')}
-        </button>
-      </div>
-    </form>
+      <Form onSubmit={handleSubmit}>
+        <InputGroup>
+          <Form.Control
+            type="text"
+            value={messageText}
+            onChange={(e) => setMessageText(e.target.value)}
+            placeholder={t('chat.messages.placeholder')}
+            aria-label="Новое сообщение"
+            disabled={sending}
+            className="rounded-pill"
+          />
+          <Button
+            type="submit"
+            variant="primary"
+            disabled={!messageText.trim() || sending}
+            className="rounded-pill px-4"
+          >
+            {sending ? (
+              <>
+                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                {t('chat.messages.sending')}
+              </>
+            ) : (
+              <>
+                <Send className="me-2" />
+                {t('chat.messages.send')}
+              </>
+            )}
+          </Button>
+        </InputGroup>
+      </Form>
+    </div>
   );
 };
 

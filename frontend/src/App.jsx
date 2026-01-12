@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import { I18nextProvider } from 'react-i18next';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { AuthProvider } from './contexts/AuthContext';
 import store from './store/store';
 import i18n from './i18n/i18n';

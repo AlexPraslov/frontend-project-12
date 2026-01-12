@@ -5,6 +5,8 @@ import ChannelsList from '../components/channels/ChannelsList';
 import MessagesList from '../components/messages/MessagesList';
 import AddChannelModal from '../components/modals/AddChannelModal';
 import { useTranslation } from 'react-i18next';
+import { Container, Row, Col, Button } from 'react-bootstrap';
+import { Plus } from 'react-bootstrap-icons';
 
 const MainPage = () => {
   const dispatch = useDispatch();
@@ -17,78 +19,36 @@ const MainPage = () => {
 
   return (
     <>
-      <div style={{
-        display: 'flex',
-        height: 'calc(100vh - 70px)',
-        fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
-        maxWidth: '1400px',
-        margin: '0 auto',
-        boxShadow: '0 0 20px rgba(0, 0, 0, 0.1)'
-      }}>
-        {/* Левая панель - каналы */}
-        <div style={{
-          width: '280px',
-          borderRight: '1px solid #e0e0e0',
-          display: 'flex',
-          flexDirection: 'column',
-          backgroundColor: '#fff'
-        }}>
-          <div style={{
-            padding: '15px 25px',
-            borderBottom: '1px solid #e0e0e0',
-            backgroundColor: '#f8f9fa',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}>
-            <div style={{
-              fontSize: '13px',
-              fontWeight: '600',
-              color: '#495057',
-              letterSpacing: '0.3px'
-            }}>
-              {t('chat.channels.title')}
+      <Container fluid className="h-100">
+        <Row className="h-100">
+          {/* Левая панель - каналы */}
+          <Col md={3} lg={2} className="channels-sidebar bg-white p-0 d-flex flex-column">
+            <div className="d-flex justify-content-between align-items-center p-3 border-bottom">
+              <h6 className="mb-0 text-muted text-uppercase">
+                {t('chat.channels.title')}
+              </h6>
+              <Button
+                variant="success"
+                size="sm"
+                onClick={() => setShowAddModal(true)}
+                className="rounded-circle p-0"
+                style={{ width: '30px', height: '30px' }}
+                title={t('chat.channels.addButton')}
+              >
+                <Plus size={16} />
+              </Button>
             </div>
-            <button
-              onClick={() => setShowAddModal(true)}
-              style={{
-                padding: '6px 12px',
-                backgroundColor: '#28a745',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '12px',
-                fontWeight: '500',
-                transition: 'all 0.2s'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#218838';
-                e.currentTarget.style.transform = 'translateY(-1px)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#28a745';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}
-            >
-              {t('chat.channels.addButton')}
-            </button>
-          </div>
-          
-          <ChannelsList />
-        </div>
+            <div className="flex-grow-1">
+              <ChannelsList />
+            </div>
+          </Col>
 
-        {/* Правая панель - сообщения */}
-        <div style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          backgroundColor: '#fff',
-          minWidth: '0'
-        }}>
-          <MessagesList />
-        </div>
-      </div>
+          {/* Правая панель - сообщения */}
+          <Col md={9} lg={10} className="messages-container p-0">
+            <MessagesList />
+          </Col>
+        </Row>
+      </Container>
 
       <AddChannelModal 
         show={showAddModal} 

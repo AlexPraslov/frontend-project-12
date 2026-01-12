@@ -1,127 +1,64 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { setCurrentChannel } from '../../store/slices/channelsSlice';
 import ChannelDropdown from './ChannelDropdown';
-import { useRef } from 'react';
+import { ListGroup, Badge } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
 const ChannelsList = () => {
   const dispatch = useDispatch();
   const { items, currentChannelId, loading, error } = useSelector((state) => state.channels);
-  const containerRef = useRef(null);
+  const { t } = useTranslation();
 
   if (loading) {
     return (
-      <div style={{ padding: '20px', textAlign: 'center', color: '#6c757d' }}>
-        Загрузка каналов...
+      <div className="text-center text-muted p-4">
+        {t('common.loading')}
       </div>
     );
   }
 
   if (error) {
     return (
-      <div style={{ padding: '20px', textAlign: 'center', color: '#dc3545' }}>
-        Ошибка: {error}
+      <div className="text-center text-danger p-4">
+        {t('errors.loadChannels')}
       </div>
     );
   }
 
   return (
-    <div ref={containerRef} style={{ flex: 1, overflowY: 'auto' }}>
+    <ListGroup variant="flush" className="overflow-auto">
       {items.map((channel) => {
         const normalizedCurrentId = String(currentChannelId);
         const normalizedChannelId = String(channel.id);
         const isActive = normalizedCurrentId === normalizedChannelId;
 
         return (
-          <button
+          <ListGroup.Item
             key={channel.id}
-            type="button"
+            action
+            active={isActive}
             onClick={() => dispatch(setCurrentChannel(channel.id))}
-            style={{
-              padding: '12px 15px',
-              borderBottom: '1px solid #f0f0f0',
-              backgroundColor: isActive ? '#007bff' : 'transparent',
-              color: isActive ? 'white' : '#333',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              width: '100%',
-              border: 'none',
-              textAlign: 'left',
-              fontFamily: 'inherit',
-              fontSize: 'inherit',
-              position: 'relative',
-            }}
-            onMouseEnter={(e) => {
-              if (!isActive) {
-                e.currentTarget.style.backgroundColor = '#f0f0f0';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isActive) {
-                e.currentTarget.style.backgroundColor = 'transparent';
-              }
-            }}
+            className="d-flex justify-content-between align-items-center rounded-0 border-0 border-bottom py-3 px-3"
           >
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center',
-              flex: 1,
-              overflow: 'hidden',
-              minWidth: 0,
-            }}>
-              <span style={{ 
-                marginRight: '10px', 
-                fontWeight: 'bold',
-                color: isActive ? 'white' : '#666',
-                flexShrink: 0,
-              }}>
+            <div className="d-flex align-items-center overflow-hidden flex-grow-1">
+              <span className={`me-2 ${isActive ? 'text-white' : 'text-muted'}`}>
                 #
               </span>
-              <span style={{ 
-                flex: 1,
-                fontSize: '14px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                minWidth: 0,
-              }}>
+              <span className="text-truncate">
                 {channel.name}
               </span>
-              {!channel.removable && (
-                <span style={{ 
-                  fontSize: '11px', 
-                  opacity: 0.7,
-                  color: isActive ? 'rgba(255,255,255,0.8)' : '#666',
-                  marginLeft: '8px',
-                  whiteSpace: 'nowrap',
-                  flexShrink: 0,
-                }}>
-                  системный
-                </span>
-              )}
             </div>
             
-            {/* ИЗМЕНЕНИЕ: Всегда показываем кнопку управления, как в демо */}
             <div 
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
-              style={{ 
-                marginLeft: '10px',
-                flexShrink: 0,
-                position: 'relative',
-                zIndex: 2,
-              }}
+              onClick={(e) => e.stopPropagation()}
+              className="ms-2 flex-shrink-0"
             >
               <ChannelDropdown channelId={channel.id} />
             </div>
-          </button>
+          </ListGroup.Item>
         );
       })}
-    </div>
+    </ListGroup>
   );
 };
 

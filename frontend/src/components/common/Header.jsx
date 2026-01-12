@@ -1,128 +1,67 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
+import { Navbar, Container, Nav, Button } from 'react-bootstrap';
+import { ChatLeftText } from 'react-bootstrap-icons';
 
 const Header = () => {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, username } = useAuth();
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
-    <header style={{
-      backgroundColor: '#007bff',
-      padding: '15px 30px',
-      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-      position: 'sticky',
-      top: 0,
-      zIndex: 1000,
-    }}>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        maxWidth: '1400px',
-        margin: '0 auto',
-      }}>
-        {/* Логотип/ссылка на главную */}
-        <Link 
-          to="/" 
-          style={{
-            color: 'white',
-            textDecoration: 'none',
-            fontSize: '24px',
-            fontWeight: 'bold',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <span style={{ marginRight: '10px' }}>💬</span>
+    <Navbar bg="primary" variant="dark" expand="lg" className="shadow-sm">
+      <Container fluid="lg">
+        <Navbar.Brand as={Link} to="/" className="d-flex align-items-center fw-bold">
+          <ChatLeftText className="me-2" size={24} />
           {t('header.title')}
-        </Link>
-
-        {/* Правая часть - кнопки */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+        </Navbar.Brand>
+        
+        <Nav className="ms-auto align-items-center">
           {isAuthenticated ? (
             <>
-              <span style={{ color: 'white', fontSize: '14px' }}>
-                {t('header.welcome')}
-              </span>
-              <button
-                onClick={logout}
-                style={{
-                  padding: '8px 16px',
-                  backgroundColor: 'white',
-                  color: '#007bff',
-                  border: 'none',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  transition: 'all 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#f8f9fa';
-                  e.currentTarget.style.transform = 'translateY(-1px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'white';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
+              <Nav.Item className="text-white me-3">
+                <small>{t('header.welcome')} <strong>{username}</strong></small>
+              </Nav.Item>
+              <Button 
+                variant="light" 
+                size="sm"
+                onClick={handleLogout}
+                className="text-primary"
               >
                 {t('header.logout')}
-              </button>
+              </Button>
             </>
           ) : (
             <>
-              <Link 
-                to="/login"
-                style={{
-                  padding: '8px 16px',
-                  backgroundColor: 'transparent',
-                  color: 'white',
-                  border: '1px solid white',
-                  borderRadius: '6px',
-                  textDecoration: 'none',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  transition: 'all 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                }}
+              <Button 
+                as={Link} 
+                to="/login" 
+                variant="outline-light" 
+                size="sm"
+                className="me-2"
               >
                 {t('header.login')}
-              </Link>
-              <Link 
-                to="/signup"
-                style={{
-                  padding: '8px 16px',
-                  backgroundColor: 'white',
-                  color: '#007bff',
-                  border: 'none',
-                  borderRadius: '6px',
-                  textDecoration: 'none',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  transition: 'all 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#f8f9fa';
-                  e.currentTarget.style.transform = 'translateY(-1px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'white';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
+              </Button>
+              <Button 
+                as={Link} 
+                to="/signup" 
+                variant="light" 
+                size="sm"
+                className="text-primary"
               >
                 {t('header.signup')}
-              </Link>
+              </Button>
             </>
           )}
-        </div>
-      </div>
-    </header>
+        </Nav>
+      </Container>
+    </Navbar>
   );
 };
 
