@@ -23,8 +23,8 @@ i18n
       escapeValue: false, // React уже защищает от XSS
     },
 
-    // Опции для отладки (можно отключить в production)
-    debug: process.env.NODE_ENV === 'development',
+    // Опции для отладки
+    debug: false,
 
     // Реакция на изменение языка
     react: {

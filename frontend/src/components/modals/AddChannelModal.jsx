@@ -17,7 +17,7 @@ const AddChannelModal = ({ show, onHide }) => {
     name: Yup.string()
       .min(3, t('chat.channels.addModal.lengthError'))
       .max(20, t('chat.channels.addModal.lengthError'))
-      .test('unique', t('chat.channels.addModal.uniqueError'), (value) => !channels.some((channel) => channel.name.toLowerCase() === value.toLowerCase()))
+      .test('unique', t('chat.channels.addModal.uniqueError'), value => !channels.some(channel => channel.name.toLowerCase() === value.toLowerCase()))
       .required(t('auth.validation.required')),
   })
 

@@ -96,13 +96,15 @@ const LoginPage = () => {
               )}
 
               <div style={{ marginBottom: '20px' }}>
-                <label htmlFor="username" style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: '500',
-                  color: '#555',
-                  fontSize: '14px',
-                }}
+                <label
+                  htmlFor="username"
+                  style={{
+                    display: 'block',
+                    marginBottom: '8px',
+                    fontWeight: '500',
+                    color: '#555',
+                    fontSize: '14px',
+                  }}
                 >
                   {t('auth.login.username')}
                   :
@@ -122,7 +124,7 @@ const LoginPage = () => {
                   }}
                 />
                 <ErrorMessage name="username">
-                  {(msg) => (
+                  {msg => (
                     <div style={{
                       color: '#dc3545',
                       fontSize: '13px',
@@ -136,13 +138,15 @@ const LoginPage = () => {
               </div>
 
               <div style={{ marginBottom: '25px' }}>
-                <label htmlFor="password" style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: '500',
-                  color: '#555',
-                  fontSize: '14px',
-                }}
+                <label
+                  htmlFor="password"
+                  style={{
+                    display: 'block',
+                    marginBottom: '8px',
+                    fontWeight: '500',
+                    color: '#555',
+                    fontSize: '14px',
+                  }}
                 >
                   {t('auth.login.password')}
                   :
@@ -162,7 +166,7 @@ const LoginPage = () => {
                   }}
                 />
                 <ErrorMessage name="password">
-                  {(msg) => (
+                  {msg => (
                     <div style={{
                       color: '#dc3545',
                       fontSize: '13px',

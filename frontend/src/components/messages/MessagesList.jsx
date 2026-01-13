@@ -12,7 +12,7 @@ const MessagesList = () => {
 
   const prevChannelIdRef = useRef(currentChannelId)
 
-  const currentChannel = useMemo(() => channels.find((ch) => String(ch.id) === String(currentChannelId)) || { name: 'Unknown' }, [channels, currentChannelId])
+  const currentChannel = useMemo(() => channels.find(ch => String(ch.id) === String(currentChannelId)) || { name: 'Unknown' }, [channels, currentChannelId])
 
   const filteredMessages = useMemo(() => {
     const normalizedChannelId = String(currentChannelId)
@@ -35,7 +35,7 @@ const MessagesList = () => {
       return
     }
 
-    const handleNewMessage = (message) => {
+    const handleNewMessage = message => {
       const messageChannelId = String(message.channelId)
       dispatch(addMessage({
         channelId: messageChannelId,
@@ -102,7 +102,7 @@ const MessagesList = () => {
           </div>
         ) : (
           <ListGroup variant="flush">
-            {filteredMessages.map((message) => (
+            {filteredMessages.map(message => (
               <ListGroup.Item key={message.id} className="border-0 mb-2 p-0">
                 <Card className="message-item border-0">
                   <Card.Body className="py-2 px-3">

@@ -58,7 +58,7 @@ const MessageForm = () => {
       console.error('HTTP error:', err)
 
       if (retries > 0) {
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+        await new Promise(resolve => setTimeout(resolve, 1000))
         return sendMessageViaHTTP(messageData, retries - 1)
       }
 

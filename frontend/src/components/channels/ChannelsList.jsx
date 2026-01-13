@@ -26,7 +26,7 @@ const ChannelsList = () => {
 
   return (
     <div className="overflow-visible" style={{ flex: 1 }}>
-      {items.map((channel) => {
+      {items.map(channel => {
         const normalizedCurrentId = String(currentChannelId)
         const normalizedChannelId = String(channel.id)
         const isActive = normalizedCurrentId === normalizedChannelId
@@ -52,10 +52,10 @@ const ChannelsList = () => {
                 flex: '1 1 auto',
                 minWidth: 0,
               }}
-              onMouseEnter={(e) => {
+              onMouseEnter={e => {
                 if (!isActive) e.currentTarget.style.backgroundColor = '#f8f9fa'
               }}
-              onMouseLeave={(e) => {
+              onMouseLeave={e => {
                 if (!isActive) e.currentTarget.style.backgroundColor = 'white'
               }}
             >
@@ -76,7 +76,7 @@ const ChannelsList = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
-                onClick={(e) => e.stopPropagation()}
+                onClick={e => e.stopPropagation()}
               >
                 <ChannelDropdown channelId={channel.id} />
               </div>

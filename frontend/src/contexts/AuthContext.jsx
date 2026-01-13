@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react'
+import { createContext, useState, useContext, useEffect } from 'react'
 import axios from 'axios'
 import { initSocket, disconnectSocket } from '../socket'
 import { notifyAuthError } from '../utils/notifications'

@@ -15,7 +15,7 @@ const ChannelDropdown = ({ channelId }) => {
   const { t } = useTranslation()
 
   const channels = useSelector((state) => state.channels.items)
-  const channel = channels.find((ch) => ch.id === channelId)
+  const channel = channels.find(ch => ch.id === channelId)
 
   useEffect(() => {
     const handleClickOutside = (event) => {

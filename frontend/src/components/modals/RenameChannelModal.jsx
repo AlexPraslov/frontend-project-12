@@ -13,15 +13,15 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
   const channels = useSelector((state) => state.channels.items)
   const { t } = useTranslation()
 
-  const channel = channels.find((ch) => ch.id === channelId)
+  const channel = channels.find(ch => ch.id === channelId)
 
   const validationSchema = Yup.object({
     name: Yup.string()
       .min(3, t('chat.channels.addModal.lengthError'))
       .max(20, t('chat.channels.addModal.lengthError'))
-      .test('unique', t('chat.channels.addModal.uniqueError'), (value) => {
+      .test('unique', t('chat.channels.addModal.uniqueError'), value => {
         if (value === channel?.name) return true
-        return !channels.some((ch) => ch.id !== channelId && ch.name.toLowerCase() === value.toLowerCase())
+        return !channels.some(ch => ch.id !== channelId && ch.name.toLowerCase() === value.toLowerCase())
       })
       .required(t('auth.validation.required')),
   })

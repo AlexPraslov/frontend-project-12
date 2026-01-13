@@ -11,7 +11,7 @@ const RemoveChannelModal = ({ show, onHide, channelId }) => {
   const channels = useSelector((state) => state.channels.items)
   const { t } = useTranslation()
 
-  const channel = channels.find((ch) => ch.id === channelId)
+  const channel = channels.find(ch => ch.id === channelId)
 
   const handleSubmit = async () => {
     if (!channel || !channel.removable) return
