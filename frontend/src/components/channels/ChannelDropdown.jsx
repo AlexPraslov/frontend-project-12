@@ -78,7 +78,7 @@ const ChannelDropdown = ({ channelId }) => {
             width: '1px',
             height: '1px',
             overflow: 'hidden'
-          }}>"Управление каналом"</span>
+          }}>Управление каналом</span>
         </button>
 
         {/* Dropdown меню как в демо */}
