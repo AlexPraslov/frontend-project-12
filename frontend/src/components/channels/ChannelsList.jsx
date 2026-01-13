@@ -25,7 +25,7 @@ const ChannelsList = () => {
   }
 
   return (
-    <div style={{ flex: 1 }}> {/* УБИРАЕМ overflow отсюда */}
+    <div className="overflow-visible" style={{ flex: 1 }}>
       {items.map((channel) => {
         const normalizedCurrentId = String(currentChannelId);
         const normalizedChannelId = String(channel.id);
@@ -39,7 +39,8 @@ const ChannelsList = () => {
               minHeight: '44px',
               borderBottom: '1px solid #f0f0f0',
               display: 'flex',
-              alignItems: 'center'
+              alignItems: 'center',
+              zIndex: 1
             }}
           >
             <button
@@ -74,10 +75,9 @@ const ChannelsList = () => {
                   width: '44px',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  position: 'relative',
-                  zIndex: 10  // ← ДОБАВЛЯЕМ z-index
+                  justifyContent: 'center'
                 }}
+                onClick={(e) => e.stopPropagation()}
               >
                 <ChannelDropdown channelId={channel.id} />
               </div>
