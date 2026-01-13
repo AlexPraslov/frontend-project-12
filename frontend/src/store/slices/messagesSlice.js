@@ -13,7 +13,7 @@ export const fetchMessages = createAsyncThunk(
         },
       })
 
-      const messagesForChannel = response.data.filter((msg) => {
+      const messagesForChannel = response.data.filter(msg => {
         const msgChannelId = typeof msg.channelId === 'number' ? msg.channelId : parseInt(msg.channelId, 10)
         const requestedChannelId = typeof channelId === 'number' ? channelId : parseInt(channelId, 10)
         return msgChannelId === requestedChannelId
@@ -47,7 +47,7 @@ const messagesSlice = createSlice({
       }
 
       const messageExists = state.byChannelId[normalizedChannelId].some(
-        (msg) => msg.id === message.id,
+        msg => msg.id === message.id,
       )
 
       if (!messageExists) {
@@ -59,9 +59,9 @@ const messagesSlice = createSlice({
       delete state.byChannelId[channelId]
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(fetchMessages.pending, (state) => {
+      .addCase(fetchMessages.pending, state => {
         state.loading = true
         state.error = null
       })

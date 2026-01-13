@@ -102,9 +102,9 @@ const channelsSlice = createSlice({
       state.currentChannelId = String(action.payload)
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(fetchChannels.pending, (state) => {
+      .addCase(fetchChannels.pending, state => {
         state.loading = true
         state.error = null
       })
@@ -127,7 +127,7 @@ const channelsSlice = createSlice({
       .addCase(removeChannel.fulfilled, (state, action) => {
         const removedChannelId = String(action.payload)
         // Удаляем канал из списка
-        state.items = state.items.filter((ch) => String(ch.id) !== removedChannelId)
+        state.items = state.items.filter(ch => String(ch.id) !== removedChannelId)
         // Если удалили текущий канал, переключаемся на General (ID: 1)
         if (state.currentChannelId === removedChannelId) {
           state.currentChannelId = '1'
@@ -135,7 +135,7 @@ const channelsSlice = createSlice({
       })
       .addCase(renameChannel.fulfilled, (state, action) => {
         const updatedChannel = action.payload
-        const index = state.items.findIndex((ch) => ch.id === updatedChannel.id)
+        const index = state.items.findIndex(ch => ch.id === updatedChannel.id)
         if (index !== -1) {
           state.items[index] = updatedChannel
         }
