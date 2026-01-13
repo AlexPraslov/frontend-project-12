@@ -88,7 +88,7 @@ const ChannelDropdown = ({ channelId }) => {
               position: 'absolute',
               top: '100%',
               right: '0',
-              zIndex: 1000,
+              zIndex: 9999,
               backgroundColor: 'white',
               border: '1px solid rgba(0,0,0,.15)',
               borderRadius: '6px',
