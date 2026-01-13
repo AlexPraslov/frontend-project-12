@@ -25,7 +25,7 @@ const ChannelsList = () => {
   }
 
   return (
-    <div className="overflow-auto" style={{ flex: 1 }}>
+    <div style={{ flex: 1 }}> {/* УБИРАЕМ overflow отсюда */}
       {items.map((channel) => {
         const normalizedCurrentId = String(currentChannelId);
         const normalizedChannelId = String(channel.id);
@@ -42,7 +42,6 @@ const ChannelsList = () => {
               alignItems: 'center'
             }}
           >
-            {/* Кнопка канала - занимает всё пространство кроме места для ⋮ */}
             <button
               type="button"
               onClick={() => dispatch(setCurrentChannel(channel.id))}
@@ -68,7 +67,6 @@ const ChannelsList = () => {
               </span>
             </button>
             
-            {/* Кнопка управления ⋮ - ТОЛЬКО для removable каналов */}
             {channel.removable && (
               <div 
                 className="flex-shrink-0"
@@ -76,7 +74,9 @@ const ChannelsList = () => {
                   width: '44px',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  position: 'relative',
+                  zIndex: 10  // ← ДОБАВЛЯЕМ z-index
                 }}
               >
                 <ChannelDropdown channelId={channel.id} />
