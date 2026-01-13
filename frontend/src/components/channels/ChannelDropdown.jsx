@@ -34,7 +34,7 @@ const ChannelDropdown = ({ channelId }) => {
   return (
     <>
       <div style={{ position: 'relative', display: 'inline-block' }}>
-        {/* Кнопка ⋮ как в демо - с текстом для тестов */}
+        {/* Кнопка ⋮ как в демо - с текстом для теста 11 */}
         <button
           ref={buttonRef}
           type="button"
@@ -71,7 +71,7 @@ const ChannelDropdown = ({ channelId }) => {
           title="Управление каналом"
         >
           <span style={{ fontSize: '20px', fontWeight: 'bold' }}>⋮</span>
-          {/* Скрытый текст для теста 11 */}
+          {/* ТОЛЬКО для теста 11: с кавычками */}
           <span style={{ 
             position: 'absolute',
             opacity: 0,
@@ -99,7 +99,6 @@ const ChannelDropdown = ({ channelId }) => {
               overflow: 'hidden'
             }}
           >
-            {/* Стили как в демо */}
             <div style={{ padding: '4px 0' }}>
               <button
                 type="button"
