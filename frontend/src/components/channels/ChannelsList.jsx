@@ -34,17 +34,19 @@ const ChannelsList = () => {
         return (
           <div
             key={channel.id}
-            className="d-flex align-items-center justify-content-between border-bottom"
+            className="position-relative"
             style={{ 
               minHeight: '44px',
-              position: 'relative'
+              borderBottom: '1px solid #f0f0f0',
+              display: 'flex',
+              alignItems: 'center'
             }}
           >
-            {/* Кнопка канала - ЗАНИМАЕТ ВСЮ ШИРИНУ КРОМЕ МЕСТА ДЛЯ ⋮ */}
+            {/* Кнопка канала - занимает всё пространство кроме места для ⋮ */}
             <button
               type="button"
               onClick={() => dispatch(setCurrentChannel(channel.id))}
-              className={`d-flex align-items-center px-3 py-2 border-0 text-start flex-grow-1 ${isActive ? 'bg-primary text-white' : 'bg-white'}`}
+              className={`d-flex align-items-center px-3 py-2 border-0 text-start flex-grow-1 h-100 ${isActive ? 'bg-primary text-white' : 'bg-white'}`}
               style={{ 
                 cursor: 'pointer',
                 minHeight: '44px',
@@ -66,19 +68,20 @@ const ChannelsList = () => {
               </span>
             </button>
             
-            {/* Кнопка управления (⋮) - ОТДЕЛЬНАЯ КНОПКА СПРАВА */}
-            <div 
-              className="flex-shrink-0"
-              style={{ 
-                width: '44px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <ChannelDropdown channelId={channel.id} />
-            </div>
+            {/* Кнопка управления ⋮ - ТОЛЬКО для removable каналов */}
+            {channel.removable && (
+              <div 
+                className="flex-shrink-0"
+                style={{ 
+                  width: '44px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <ChannelDropdown channelId={channel.id} />
+              </div>
+            )}
           </div>
         );
       })}
