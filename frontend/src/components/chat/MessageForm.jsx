@@ -15,7 +15,7 @@ const MessageForm = () => {
   const { t } = useTranslation()
   const { username } = useAuth()
 
-  const { currentChannelId } = useSelector((state) => state.channels)
+  const { currentChannelId } = useSelector(state => state.channels)
 
   // Получаем состояние соединения из socket
   const socket = getSocket()
@@ -32,7 +32,7 @@ const MessageForm = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
           ...messageData,
@@ -54,7 +54,8 @@ const MessageForm = () => {
 
       notifyMessageSent()
       return data
-    } catch (err) {
+    }
+    catch (err) {
       console.error('HTTP error:', err)
 
       if (retries > 0) {
@@ -82,7 +83,8 @@ const MessageForm = () => {
 
       await sendMessageViaHTTP(messageData)
       setMessageText('')
-    } catch (err) {
+    }
+    catch (err) {
       const errorMessage = err.message || t('errors.sendMessage')
       setError(`${errorMessage}. ${t('errors.sendMessage')}`)
       notifySendMessageError()
@@ -95,7 +97,8 @@ const MessageForm = () => {
         attempts: 1,
       })
       localStorage.setItem('unsentMessages', JSON.stringify(unsentMessages))
-    } finally {
+    }
+    finally {
       setSending(false)
     }
   }
@@ -116,7 +119,8 @@ const MessageForm = () => {
 
         await sendMessageViaHTTP(messageData)
         successful.push(msg)
-      } catch (err) {
+      }
+      catch (err) {
         console.error('Failed to resend saved message:', err)
         failed.push({ ...msg, attempts: (msg.attempts || 1) + 1 })
       }
@@ -141,11 +145,13 @@ const MessageForm = () => {
           bg={connectionStatus === 'connected' ? 'success' : 'secondary'}
           className="d-flex align-items-center"
         >
-          {connectionStatus === 'connected' ? (
-            <Wifi size={12} className="me-1" />
-          ) : (
-            <WifiOff size={12} className="me-1" />
-          )}
+          {connectionStatus === 'connected'
+            ? (
+                <Wifi size={12} className="me-1" />
+              )
+            : (
+                <WifiOff size={12} className="me-1" />
+              )}
           {connectionStatus === 'connected'
             ? t('chat.messages.connection.online')
             : t('chat.messages.connection.offline')}
@@ -176,7 +182,7 @@ const MessageForm = () => {
           <Form.Control
             type="text"
             value={messageText}
-            onChange={(e) => setMessageText(e.target.value)}
+            onChange={e => setMessageText(e.target.value)}
             placeholder={t('chat.messages.placeholder')}
             aria-label="Новое сообщение"
             disabled={sending}
@@ -188,17 +194,19 @@ const MessageForm = () => {
             disabled={!messageText.trim() || sending}
             className="rounded-pill px-4"
           >
-            {sending ? (
-              <>
-                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
-                {t('chat.messages.sending')}
-              </>
-            ) : (
-              <>
-                <Send className="me-2" />
-                {t('chat.messages.send')}
-              </>
-            )}
+            {sending
+              ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
+                    {t('chat.messages.sending')}
+                  </>
+                )
+              : (
+                  <>
+                    <Send className="me-2" />
+                    {t('chat.messages.send')}
+                  </>
+                )}
           </Button>
         </InputGroup>
       </Form>

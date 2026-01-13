@@ -35,46 +35,52 @@ const SignupPage = () => {
       if (result.success) {
         // После успешной регистрации редирект на главную
         navigate('/')
-      } else {
+      }
+      else {
         setServerError(result.message || t('auth.signup.registrationError'))
         resetForm()
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Ошибка регистрации:', error)
       setServerError(t('auth.signup.registrationError'))
       resetForm()
-    } finally {
+    }
+    finally {
       setSubmitting(false)
     }
   }
 
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      minHeight: '100vh',
-      backgroundColor: '#f5f5f5',
-      fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
-    }}
-    >
-      <div style={{
-        width: '100%',
-        maxWidth: '400px',
-        padding: '40px',
-        backgroundColor: 'white',
-        borderRadius: '12px',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-        border: '1px solid #e0e0e0',
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100vh',
+        backgroundColor: '#f5f5f5',
+        fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
       }}
-      >
-        <h1 style={{
-          textAlign: 'center',
-          marginBottom: '30px',
-          color: '#333',
-          fontSize: '28px',
-          fontWeight: '600',
+    >
+      <div
+        style={{
+          width: '100%',
+          maxWidth: '400px',
+          padding: '40px',
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+          border: '1px solid #e0e0e0',
         }}
+      >
+        <h1
+          style={{
+            textAlign: 'center',
+            marginBottom: '30px',
+            color: '#333',
+            fontSize: '28px',
+            fontWeight: '600',
+          }}
         >
           {t('auth.signup.title')}
         </h1>
@@ -87,15 +93,16 @@ const SignupPage = () => {
           {({ isSubmitting, errors, touched }) => (
             <Form>
               {serverError && (
-                <div style={{
-                  color: '#dc3545',
-                  marginBottom: '20px',
-                  padding: '12px',
-                  backgroundColor: '#f8d7da',
-                  borderRadius: '6px',
-                  fontSize: '14px',
-                  textAlign: 'center',
-                }}
+                <div
+                  style={{
+                    color: '#dc3545',
+                    marginBottom: '20px',
+                    padding: '12px',
+                    backgroundColor: '#f8d7da',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    textAlign: 'center',
+                  }}
                 >
                   {serverError}
                 </div>
@@ -103,13 +110,15 @@ const SignupPage = () => {
 
               {/* Имя пользователя */}
               <div style={{ marginBottom: '20px' }}>
-                <label htmlFor="username" style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: '500',
-                  color: '#555',
-                  fontSize: '14px',
-                }}
+                <label
+                  htmlFor="username"
+                  style={{
+                    display: 'block',
+                    marginBottom: '8px',
+                    fontWeight: '500',
+                    color: '#555',
+                    fontSize: '14px',
+                  }}
                 >
                   {t('auth.signup.username')}
                   :
@@ -129,12 +138,13 @@ const SignupPage = () => {
                   }}
                 />
                 <ErrorMessage name="username">
-                  {(msg) => (
-                    <div style={{
-                      color: '#dc3545',
-                      fontSize: '13px',
-                      marginTop: '5px',
-                    }}
+                  {msg => (
+                    <div
+                      style={{
+                        color: '#dc3545',
+                        fontSize: '13px',
+                        marginTop: '5px',
+                      }}
                     >
                       {msg}
                     </div>
@@ -144,13 +154,15 @@ const SignupPage = () => {
 
               {/* Пароль */}
               <div style={{ marginBottom: '20px' }}>
-                <label htmlFor="password" style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: '500',
-                  color: '#555',
-                  fontSize: '14px',
-                }}
+                <label
+                  htmlFor="password"
+                  style={{
+                    display: 'block',
+                    marginBottom: '8px',
+                    fontWeight: '500',
+                    color: '#555',
+                    fontSize: '14px',
+                  }}
                 >
                   {t('auth.signup.password')}
                   :
@@ -170,12 +182,13 @@ const SignupPage = () => {
                   }}
                 />
                 <ErrorMessage name="password">
-                  {(msg) => (
-                    <div style={{
-                      color: '#dc3545',
-                      fontSize: '13px',
-                      marginTop: '5px',
-                    }}
+                  {msg => (
+                    <div
+                      style={{
+                        color: '#dc3545',
+                        fontSize: '13px',
+                        marginTop: '5px',
+                      }}
                     >
                       {msg}
                     </div>
@@ -185,13 +198,15 @@ const SignupPage = () => {
 
               {/* Подтверждение пароля */}
               <div style={{ marginBottom: '25px' }}>
-                <label htmlFor="confirmPassword" style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: '500',
-                  color: '#555',
-                  fontSize: '14px',
-                }}
+                <label
+                  htmlFor="confirmPassword"
+                  style={{
+                    display: 'block',
+                    marginBottom: '8px',
+                    fontWeight: '500',
+                    color: '#555',
+                    fontSize: '14px',
+                  }}
                 >
                   {t('auth.signup.confirmPassword')}
                   :
@@ -211,12 +226,13 @@ const SignupPage = () => {
                   }}
                 />
                 <ErrorMessage name="confirmPassword">
-                  {(msg) => (
-                    <div style={{
-                      color: '#dc3545',
-                      fontSize: '13px',
-                      marginTop: '5px',
-                    }}
+                  {msg => (
+                    <div
+                      style={{
+                        color: '#dc3545',
+                        fontSize: '13px',
+                        marginTop: '5px',
+                      }}
                     >
                       {msg}
                     </div>
@@ -247,14 +263,15 @@ const SignupPage = () => {
           )}
         </Formik>
 
-        <div style={{
-          textAlign: 'center',
-          marginTop: '20px',
-          paddingTop: '20px',
-          borderTop: '1px solid #eee',
-          fontSize: '14px',
-          color: '#666',
-        }}
+        <div
+          style={{
+            textAlign: 'center',
+            marginTop: '20px',
+            paddingTop: '20px',
+            borderTop: '1px solid #eee',
+            fontSize: '14px',
+            color: '#666',
+          }}
         >
           <p style={{ margin: '0 0 10px 0' }}>
             {t('auth.signup.hasAccount')}

@@ -11,7 +11,7 @@ leoProfanity.add(['привет', 'мир']) // Пример добавлени�
 leoProfanity.remove(['hello']) // Пример удаления слов из словаря
 
 // Основная функция фильтрации
-export const filterProfanity = text => {
+export const filterProfanity = (text) => {
   if (!text || typeof text !== 'string') return text
 
   // Проверяем, содержит ли текст нецензурные слова
@@ -26,13 +26,13 @@ export const filterProfanity = text => {
 }
 
 // Функция только для проверки (без очистки)
-export const hasProfanity = text => {
+export const hasProfanity = (text) => {
   if (!text || typeof text !== 'string') return false
   return leoProfanity.check(text)
 }
 
 // Функция для получения списка найденных нецензурных слов
-export const getProfanityList = text => {
+export const getProfanityList = (text) => {
   if (!text || typeof text !== 'string') return []
   return leoProfanity.list(text)
 }

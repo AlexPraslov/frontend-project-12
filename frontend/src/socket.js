@@ -2,7 +2,7 @@ import { io } from 'socket.io-client'
 
 let socket = null
 
-export const initSocket = token => {
+export const initSocket = (token) => {
   if (socket) {
     return socket
   }
@@ -21,11 +21,11 @@ export const initSocket = token => {
     console.log('Socket.IO connected:', socket.id)
   })
 
-  socket.on('connect_error', error => {
+  socket.on('connect_error', (error) => {
     console.error('Socket.IO connection error:', error)
   })
 
-  socket.on('disconnect', reason => {
+  socket.on('disconnect', (reason) => {
     console.log('Socket.IO disconnected:', reason)
   })
 

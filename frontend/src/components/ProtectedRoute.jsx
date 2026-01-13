@@ -6,14 +6,15 @@ const ProtectedRoute = ({ children }) => {
 
   if (loading) {
     return (
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: 'calc(100vh - 70px)',
-        fontSize: '18px',
-        color: '#666',
-      }}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 'calc(100vh - 70px)',
+          fontSize: '18px',
+          color: '#666',
+        }}
       >
         Загрузка...
       </div>

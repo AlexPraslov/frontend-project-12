@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 const ChannelsList = () => {
   const dispatch = useDispatch()
-  const { items, currentChannelId, loading, error } = useSelector((state) => state.channels)
+  const { items, currentChannelId, loading, error } = useSelector(state => state.channels)
   const { t } = useTranslation()
 
   if (loading) {
@@ -26,7 +26,7 @@ const ChannelsList = () => {
 
   return (
     <div className="overflow-visible" style={{ flex: 1 }}>
-      {items.map(channel => {
+      {items.map((channel) => {
         const normalizedCurrentId = String(currentChannelId)
         const normalizedChannelId = String(channel.id)
         const isActive = normalizedCurrentId === normalizedChannelId
@@ -52,10 +52,10 @@ const ChannelsList = () => {
                 flex: '1 1 auto',
                 minWidth: 0,
               }}
-              onMouseEnter={e => {
+              onMouseEnter={(e) => {
                 if (!isActive) e.currentTarget.style.backgroundColor = '#f8f9fa'
               }}
-              onMouseLeave={e => {
+              onMouseLeave={(e) => {
                 if (!isActive) e.currentTarget.style.backgroundColor = 'white'
               }}
             >

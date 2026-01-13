@@ -23,46 +23,48 @@ const Header = () => {
         </Navbar.Brand>
 
         <Nav className="ms-auto align-items-center">
-          {isAuthenticated ? (
-            <>
-              <Nav.Item className="text-white me-3">
-                <small>
-                  {t('header.welcome')}
-                  {' '}
-                  <strong>{username}</strong>
-                </small>
-              </Nav.Item>
-              <Button
-                variant="light"
-                size="sm"
-                onClick={handleLogout}
-                className="text-primary"
-              >
-                {t('header.logout')}
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button
-                as={Link}
-                to="/login"
-                variant="outline-light"
-                size="sm"
-                className="me-2"
-              >
-                {t('header.login')}
-              </Button>
-              <Button
-                as={Link}
-                to="/signup"
-                variant="light"
-                size="sm"
-                className="text-primary"
-              >
-                {t('header.signup')}
-              </Button>
-            </>
-          )}
+          {isAuthenticated
+            ? (
+                <>
+                  <Nav.Item className="text-white me-3">
+                    <small>
+                      {t('header.welcome')}
+                      {' '}
+                      <strong>{username}</strong>
+                    </small>
+                  </Nav.Item>
+                  <Button
+                    variant="light"
+                    size="sm"
+                    onClick={handleLogout}
+                    className="text-primary"
+                  >
+                    {t('header.logout')}
+                  </Button>
+                </>
+              )
+            : (
+                <>
+                  <Button
+                    as={Link}
+                    to="/login"
+                    variant="outline-light"
+                    size="sm"
+                    className="me-2"
+                  >
+                    {t('header.login')}
+                  </Button>
+                  <Button
+                    as={Link}
+                    to="/signup"
+                    variant="light"
+                    size="sm"
+                    className="text-primary"
+                  >
+                    {t('header.signup')}
+                  </Button>
+                </>
+              )}
         </Nav>
       </Container>
     </Navbar>

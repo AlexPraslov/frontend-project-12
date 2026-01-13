@@ -14,13 +14,13 @@ const ChannelDropdown = ({ channelId }) => {
   const buttonRef = useRef(null)
   const { t } = useTranslation()
 
-  const channels = useSelector((state) => state.channels.items)
+  const channels = useSelector(state => state.channels.items)
   const channel = channels.find(ch => ch.id === channelId)
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)
-          && buttonRef.current && !buttonRef.current.contains(event.target)) {
+        && buttonRef.current && !buttonRef.current.contains(event.target)) {
         setDropdownOpen(false)
       }
     }
@@ -71,13 +71,14 @@ const ChannelDropdown = ({ channelId }) => {
         >
           <span style={{ fontSize: '20px', fontWeight: 'bold' }}>⋮</span>
           {/* ТОЛЬКО для теста 11: с кавычками */}
-          <span style={{
-            position: 'absolute',
-            opacity: 0,
-            width: '1px',
-            height: '1px',
-            overflow: 'hidden',
-          }}
+          <span
+            style={{
+              position: 'absolute',
+              opacity: 0,
+              width: '1px',
+              height: '1px',
+              overflow: 'hidden',
+            }}
           >
             Управление каналом
           </span>
@@ -160,10 +161,11 @@ const ChannelDropdown = ({ channelId }) => {
                 {t('chat.channels.dropdown.remove')}
               </button>
 
-              <div style={{
-                borderTop: '1px solid #e9ecef',
-                margin: '6px 0',
-              }}
+              <div
+                style={{
+                  borderTop: '1px solid #e9ecef',
+                  margin: '6px 0',
+                }}
               />
 
               <button

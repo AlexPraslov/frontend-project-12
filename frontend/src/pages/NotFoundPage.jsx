@@ -5,42 +5,46 @@ const NotFoundPage = () => {
   const { t } = useTranslation()
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: 'calc(100vh - 70px)',
-      padding: '40px 20px',
-      textAlign: 'center',
-      backgroundColor: '#f8f9fa',
-    }}
-    >
-      <h1 style={{
-        fontSize: '120px',
-        fontWeight: 'bold',
-        color: '#007bff',
-        margin: '0 0 20px 0',
-        lineHeight: '1',
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: 'calc(100vh - 70px)',
+        padding: '40px 20px',
+        textAlign: 'center',
+        backgroundColor: '#f8f9fa',
       }}
+    >
+      <h1
+        style={{
+          fontSize: '120px',
+          fontWeight: 'bold',
+          color: '#007bff',
+          margin: '0 0 20px 0',
+          lineHeight: '1',
+        }}
       >
         404
       </h1>
-      <h2 style={{
-        fontSize: '32px',
-        color: '#333',
-        margin: '0 0 20px 0',
-      }}
+      <h2
+        style={{
+          fontSize: '32px',
+          color: '#333',
+          margin: '0 0 20px 0',
+        }}
       >
         {t('notFound.subtitle')}
       </h2>
-      <p style={{
-        fontSize: '18px',
-        color: '#666',
-        maxWidth: '600px',
-        margin: '0 0 40px 0',
-        lineHeight: '1.6',
-      }}
+      <p
+        style={{
+          fontSize: '18px',
+          color: '#666',
+          maxWidth: '600px',
+          margin: '0 0 40px 0',
+          lineHeight: '1.6',
+        }}
       >
         {t('notFound.detailed')}
       </p>

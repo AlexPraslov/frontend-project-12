@@ -8,7 +8,7 @@ import { Modal, Button } from 'react-bootstrap'
 const RemoveChannelModal = ({ show, onHide, channelId }) => {
   const dispatch = useDispatch()
   const [submitting, setSubmitting] = useState(false)
-  const channels = useSelector((state) => state.channels.items)
+  const channels = useSelector(state => state.channels.items)
   const { t } = useTranslation()
 
   const channel = channels.find(ch => ch.id === channelId)
@@ -21,9 +21,11 @@ const RemoveChannelModal = ({ show, onHide, channelId }) => {
       await dispatch(removeChannel(channelId)).unwrap()
       dispatch(removeChannelMessages(channelId))
       onHide()
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Ошибка при удалении канала:', error)
-    } finally {
+    }
+    finally {
       setSubmitting(false)
     }
   }
@@ -74,12 +76,14 @@ const RemoveChannelModal = ({ show, onHide, channelId }) => {
           disabled={!channel.removable || submitting}
           className="btn-danger"
         >
-          {submitting ? (
-            <>
-              <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
-              {t('chat.channels.removeModal.loading')}
-            </>
-          ) : t('chat.channels.removeModal.submit')}
+          {submitting
+            ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
+                  {t('chat.channels.removeModal.loading')}
+                </>
+              )
+            : t('chat.channels.removeModal.submit')}
         </Button>
       </Modal.Footer>
     </Modal>

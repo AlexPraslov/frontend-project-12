@@ -10,7 +10,7 @@ import { Modal, Button, Form as BSForm } from 'react-bootstrap'
 const RenameChannelModal = ({ show, onHide, channelId }) => {
   const dispatch = useDispatch()
   const [submitting, setSubmitting] = useState(false)
-  const channels = useSelector((state) => state.channels.items)
+  const channels = useSelector(state => state.channels.items)
   const { t } = useTranslation()
 
   const channel = channels.find(ch => ch.id === channelId)
@@ -19,7 +19,7 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
     name: Yup.string()
       .min(3, t('chat.channels.addModal.lengthError'))
       .max(20, t('chat.channels.addModal.lengthError'))
-      .test('unique', t('chat.channels.addModal.uniqueError'), value => {
+      .test('unique', t('chat.channels.addModal.uniqueError'), (value) => {
         if (value === channel?.name) return true
         return !channels.some(ch => ch.id !== channelId && ch.name.toLowerCase() === value.toLowerCase())
       })
@@ -35,9 +35,11 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
       await dispatch(renameChannel({ channelId, name: filteredName })).unwrap()
       resetForm()
       onHide()
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Ошибка при переименовании канала:', error)
-    } finally {
+    }
+    finally {
       setSubmitting(false)
     }
   }
@@ -105,12 +107,14 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
                 type="submit"
                 disabled={submitting}
               >
-                {submitting ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
-                    {t('chat.channels.renameModal.loading')}
-                  </>
-                ) : t('chat.channels.renameModal.submit')}
+                {submitting
+                  ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
+                        {t('chat.channels.renameModal.loading')}
+                      </>
+                    )
+                  : t('chat.channels.renameModal.submit')}
               </Button>
             </Modal.Footer>
           </Form>

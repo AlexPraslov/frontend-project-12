@@ -21,7 +21,8 @@ export const fetchChannels = createAsyncThunk(
         },
       })
       return response.data
-    } catch (error) {
+    }
+    catch (error) {
       notifyLoadChannelsError()
       return rejectWithValue(error.response?.data?.message || 'Ошибка загрузки каналов')
     }
@@ -42,7 +43,8 @@ export const addChannel = createAsyncThunk(
       })
       notifyChannelCreated()
       return response.data
-    } catch (error) {
+    }
+    catch (error) {
       notifyCreateChannelError()
       return rejectWithValue(error.response?.data?.message || 'Ошибка создания канала')
     }
@@ -61,7 +63,8 @@ export const removeChannel = createAsyncThunk(
       })
       notifyChannelRemoved()
       return channelId
-    } catch (error) {
+    }
+    catch (error) {
       notifyRemoveChannelError()
       return rejectWithValue(error.response?.data?.message || 'Ошибка удаления канала')
     }
@@ -82,7 +85,8 @@ export const renameChannel = createAsyncThunk(
       })
       notifyChannelRenamed()
       return response.data
-    } catch (error) {
+    }
+    catch (error) {
       notifyRenameChannelError()
       return rejectWithValue(error.response?.data?.message || 'Ошибка переименования канала')
     }
@@ -102,9 +106,9 @@ const channelsSlice = createSlice({
       state.currentChannelId = String(action.payload)
     },
   },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder
-      .addCase(fetchChannels.pending, state => {
+      .addCase(fetchChannels.pending, (state) => {
         state.loading = true
         state.error = null
       })

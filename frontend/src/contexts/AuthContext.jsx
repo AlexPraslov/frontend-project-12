@@ -17,7 +17,8 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', token)
       // Инициализируем WebSocket после установки токена
       initSocket(token)
-    } else {
+    }
+    else {
       localStorage.removeItem('token')
       localStorage.removeItem('username')
       disconnectSocket()
@@ -37,7 +38,8 @@ export const AuthProvider = ({ children }) => {
       setUsername(usernameInput)
       localStorage.setItem('username', usernameInput)
       return { success: true }
-    } catch (error) {
+    }
+    catch (error) {
       notifyAuthError()
       return {
         success: false,
@@ -58,7 +60,8 @@ export const AuthProvider = ({ children }) => {
       setUsername(usernameInput)
       localStorage.setItem('username', usernameInput)
       return { success: true }
-    } catch (error) {
+    }
+    catch (error) {
       if (error.response?.status === 409) {
         return {
           success: false,

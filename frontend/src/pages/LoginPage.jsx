@@ -35,7 +35,8 @@ const LoginPage = () => {
 
     if (result.success) {
       // Редирект произойдет автоматически через useEffect
-    } else {
+    }
+    else {
       setErrors({ submit: t('auth.validation.authError') })
     }
 
@@ -43,32 +44,35 @@ const LoginPage = () => {
   }
 
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      minHeight: '100vh',
-      backgroundColor: '#f5f5f5',
-      fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
-    }}
-    >
-      <div style={{
-        width: '100%',
-        maxWidth: '400px',
-        padding: '40px',
-        backgroundColor: 'white',
-        borderRadius: '12px',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-        border: '1px solid #e0e0e0',
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100vh',
+        backgroundColor: '#f5f5f5',
+        fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
       }}
-      >
-        <h1 style={{
-          textAlign: 'center',
-          marginBottom: '30px',
-          color: '#333',
-          fontSize: '28px',
-          fontWeight: '600',
+    >
+      <div
+        style={{
+          width: '100%',
+          maxWidth: '400px',
+          padding: '40px',
+          backgroundColor: 'white',
+          borderRadius: '12px',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+          border: '1px solid #e0e0e0',
         }}
+      >
+        <h1
+          style={{
+            textAlign: 'center',
+            marginBottom: '30px',
+            color: '#333',
+            fontSize: '28px',
+            fontWeight: '600',
+          }}
         >
           {t('auth.login.title')}
         </h1>
@@ -81,15 +85,16 @@ const LoginPage = () => {
           {({ isSubmitting, errors, touched }) => (
             <Form>
               {errors.submit && (
-                <div style={{
-                  color: '#dc3545',
-                  marginBottom: '20px',
-                  padding: '12px',
-                  backgroundColor: '#f8d7da',
-                  borderRadius: '6px',
-                  fontSize: '14px',
-                  textAlign: 'center',
-                }}
+                <div
+                  style={{
+                    color: '#dc3545',
+                    marginBottom: '20px',
+                    padding: '12px',
+                    backgroundColor: '#f8d7da',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    textAlign: 'center',
+                  }}
                 >
                   {errors.submit}
                 </div>
@@ -125,11 +130,12 @@ const LoginPage = () => {
                 />
                 <ErrorMessage name="username">
                   {msg => (
-                    <div style={{
-                      color: '#dc3545',
-                      fontSize: '13px',
-                      marginTop: '5px',
-                    }}
+                    <div
+                      style={{
+                        color: '#dc3545',
+                        fontSize: '13px',
+                        marginTop: '5px',
+                      }}
                     >
                       {msg}
                     </div>
@@ -167,11 +173,12 @@ const LoginPage = () => {
                 />
                 <ErrorMessage name="password">
                   {msg => (
-                    <div style={{
-                      color: '#dc3545',
-                      fontSize: '13px',
-                      marginTop: '5px',
-                    }}
+                    <div
+                      style={{
+                        color: '#dc3545',
+                        fontSize: '13px',
+                        marginTop: '5px',
+                      }}
                     >
                       {msg}
                     </div>
@@ -202,14 +209,15 @@ const LoginPage = () => {
           )}
         </Formik>
 
-        <div style={{
-          textAlign: 'center',
-          marginTop: '20px',
-          paddingTop: '20px',
-          borderTop: '1px solid #eee',
-          fontSize: '14px',
-          color: '#666',
-        }}
+        <div
+          style={{
+            textAlign: 'center',
+            marginTop: '20px',
+            paddingTop: '20px',
+            borderTop: '1px solid #eee',
+            fontSize: '14px',
+            color: '#666',
+          }}
         >
           <p style={{ margin: '0 0 10px 0' }}>
             {t('auth.login.noAccount')}

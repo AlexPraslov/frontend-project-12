@@ -7,8 +7,8 @@ import { Card, ListGroup, Badge, Spinner, Alert } from 'react-bootstrap'
 
 const MessagesList = () => {
   const dispatch = useDispatch()
-  const { currentChannelId, items: channels } = useSelector((state) => state.channels)
-  const { byChannelId, loading, error } = useSelector((state) => state.messages)
+  const { currentChannelId, items: channels } = useSelector(state => state.channels)
+  const { byChannelId, loading, error } = useSelector(state => state.messages)
 
   const prevChannelIdRef = useRef(currentChannelId)
 
@@ -35,7 +35,7 @@ const MessagesList = () => {
       return
     }
 
-    const handleNewMessage = message => {
+    const handleNewMessage = (message) => {
       const messageChannelId = String(message.channelId)
       dispatch(addMessage({
         channelId: messageChannelId,
@@ -93,39 +93,41 @@ const MessagesList = () => {
 
       {/* Список сообщений */}
       <div className="flex-grow-1 overflow-auto p-3">
-        {filteredMessages.length === 0 ? (
-          <div className="d-flex justify-content-center align-items-center h-100">
-            <div className="text-center text-muted">
-              <p className="mb-1">Нет сообщений в этом канале.</p>
-              <p className="mb-0">Напишите первое сообщение!</p>
-            </div>
-          </div>
-        ) : (
-          <ListGroup variant="flush">
-            {filteredMessages.map(message => (
-              <ListGroup.Item key={message.id} className="border-0 mb-2 p-0">
-                <Card className="message-item border-0">
-                  <Card.Body className="py-2 px-3">
-                    <div className="d-flex justify-content-between align-items-start mb-1">
-                      <Card.Title className="message-username mb-0">
-                        {message.username}
-                      </Card.Title>
-                      <small className="message-time">
-                        {new Date(message.createdAt || Date.now()).toLocaleTimeString([], {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </small>
-                    </div>
-                    <Card.Text className="mb-0">
-                      {message.body}
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        )}
+        {filteredMessages.length === 0
+          ? (
+              <div className="d-flex justify-content-center align-items-center h-100">
+                <div className="text-center text-muted">
+                  <p className="mb-1">Нет сообщений в этом канале.</p>
+                  <p className="mb-0">Напишите первое сообщение!</p>
+                </div>
+              </div>
+            )
+          : (
+              <ListGroup variant="flush">
+                {filteredMessages.map(message => (
+                  <ListGroup.Item key={message.id} className="border-0 mb-2 p-0">
+                    <Card className="message-item border-0">
+                      <Card.Body className="py-2 px-3">
+                        <div className="d-flex justify-content-between align-items-start mb-1">
+                          <Card.Title className="message-username mb-0">
+                            {message.username}
+                          </Card.Title>
+                          <small className="message-time">
+                            {new Date(message.createdAt || Date.now()).toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </small>
+                        </div>
+                        <Card.Text className="mb-0">
+                          {message.body}
+                        </Card.Text>
+                      </Card.Body>
+                    </Card>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            )}
       </div>
 
       {/* Форма ввода */}

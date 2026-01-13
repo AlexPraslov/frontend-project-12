@@ -10,7 +10,7 @@ import { Modal, Button, Form as BSForm } from 'react-bootstrap'
 const AddChannelModal = ({ show, onHide }) => {
   const dispatch = useDispatch()
   const [submitting, setSubmitting] = useState(false)
-  const channels = useSelector((state) => state.channels.items)
+  const channels = useSelector(state => state.channels.items)
   const { t } = useTranslation()
 
   const validationSchema = Yup.object({
@@ -28,9 +28,11 @@ const AddChannelModal = ({ show, onHide }) => {
       await dispatch(addChannel(filteredName)).unwrap()
       resetForm()
       onHide()
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Ошибка при создании канала:', error)
-    } finally {
+    }
+    finally {
       setSubmitting(false)
     }
   }
@@ -95,12 +97,14 @@ const AddChannelModal = ({ show, onHide }) => {
                 type="submit"
                 disabled={submitting}
               >
-                {submitting ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
-                    {t('chat.channels.addModal.loading')}
-                  </>
-                ) : t('chat.channels.addModal.submit')}
+                {submitting
+                  ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
+                        {t('chat.channels.addModal.loading')}
+                      </>
+                    )
+                  : t('chat.channels.addModal.submit')}
               </Button>
             </Modal.Footer>
           </Form>
