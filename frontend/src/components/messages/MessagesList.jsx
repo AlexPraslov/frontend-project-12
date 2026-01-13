@@ -1,58 +1,56 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { useEffect, useMemo, useRef } from 'react';
-import { fetchMessages, addMessage } from '../../store/slices/messagesSlice';
-import { getSocket } from '../../socket';
-import MessageForm from '../chat/MessageForm';
-import { Card, ListGroup, Badge, Spinner, Alert } from 'react-bootstrap';
+import { useSelector, useDispatch } from 'react-redux'
+import { useEffect, useMemo, useRef } from 'react'
+import { fetchMessages, addMessage } from '../../store/slices/messagesSlice'
+import { getSocket } from '../../socket'
+import MessageForm from '../chat/MessageForm'
+import { Card, ListGroup, Badge, Spinner, Alert } from 'react-bootstrap'
 
 const MessagesList = () => {
-  const dispatch = useDispatch();
-  const { currentChannelId, items: channels } = useSelector((state) => state.channels);
-  const { byChannelId, loading, error } = useSelector((state) => state.messages);
-  
-  const prevChannelIdRef = useRef(currentChannelId);
+  const dispatch = useDispatch()
+  const { currentChannelId, items: channels } = useSelector((state) => state.channels)
+  const { byChannelId, loading, error } = useSelector((state) => state.messages)
 
-  const currentChannel = useMemo(() => {
-    return channels.find(ch => String(ch.id) === String(currentChannelId)) || { name: 'Unknown' };
-  }, [channels, currentChannelId]);
+  const prevChannelIdRef = useRef(currentChannelId)
+
+  const currentChannel = useMemo(() => channels.find((ch) => String(ch.id) === String(currentChannelId)) || { name: 'Unknown' }, [channels, currentChannelId])
 
   const filteredMessages = useMemo(() => {
-    const normalizedChannelId = String(currentChannelId);
-    return byChannelId[normalizedChannelId] || [];
-  }, [currentChannelId, byChannelId]);
+    const normalizedChannelId = String(currentChannelId)
+    return byChannelId[normalizedChannelId] || []
+  }, [currentChannelId, byChannelId])
 
   useEffect(() => {
-    const normalizedCurrentId = String(currentChannelId);
-    const normalizedPrevId = String(prevChannelIdRef.current);
-    
+    const normalizedCurrentId = String(currentChannelId)
+    const normalizedPrevId = String(prevChannelIdRef.current)
+
     if (normalizedCurrentId !== normalizedPrevId) {
-      dispatch(fetchMessages(currentChannelId));
-      prevChannelIdRef.current = currentChannelId;
+      dispatch(fetchMessages(currentChannelId))
+      prevChannelIdRef.current = currentChannelId
     }
-  }, [currentChannelId, dispatch]);
+  }, [currentChannelId, dispatch])
 
   useEffect(() => {
-    const socket = getSocket();
+    const socket = getSocket()
     if (!socket) {
-      return;
+      return
     }
 
     const handleNewMessage = (message) => {
-      const messageChannelId = String(message.channelId);
+      const messageChannelId = String(message.channelId)
       dispatch(addMessage({
         channelId: messageChannelId,
-        message: message
-      }));
-    };
+        message,
+      }))
+    }
 
-    socket.on('newMessage', handleNewMessage);
+    socket.on('newMessage', handleNewMessage)
 
     return () => {
       if (socket) {
-        socket.off('newMessage', handleNewMessage);
+        socket.off('newMessage', handleNewMessage)
       }
-    };
-  }, [dispatch]);
+    }
+  }, [dispatch])
 
   if (loading && filteredMessages.length === 0) {
     return (
@@ -60,17 +58,19 @@ const MessagesList = () => {
         <Spinner animation="border" variant="primary" />
         <p className="mt-3 text-muted">Загрузка сообщений...</p>
       </div>
-    );
+    )
   }
 
   if (error) {
     return (
       <div className="d-flex flex-column justify-content-center align-items-center h-100">
         <Alert variant="danger" className="w-75 text-center">
-          Ошибка загрузки сообщений: {error}
+          Ошибка загрузки сообщений:
+          {' '}
+          {error}
         </Alert>
       </div>
-    );
+    )
   }
 
   return (
@@ -79,7 +79,11 @@ const MessagesList = () => {
       <div className="p-3 border-bottom bg-light">
         <div className="d-flex align-items-center">
           <h5 className="mb-0">
-            <strong># {currentChannel.name}</strong>
+            <strong>
+              #
+              {' '}
+              {currentChannel.name}
+            </strong>
             <Badge bg="secondary" className="ms-2">
               {filteredMessages.length}
             </Badge>
@@ -107,9 +111,9 @@ const MessagesList = () => {
                         {message.username}
                       </Card.Title>
                       <small className="message-time">
-                        {new Date(message.createdAt || Date.now()).toLocaleTimeString([], { 
-                          hour: '2-digit', 
-                          minute: '2-digit' 
+                        {new Date(message.createdAt || Date.now()).toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit',
                         })}
                       </small>
                     </div>
@@ -129,7 +133,7 @@ const MessagesList = () => {
         <MessageForm />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MessagesList;
+export default MessagesList

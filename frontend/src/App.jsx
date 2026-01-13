@@ -1,18 +1,18 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { I18nextProvider } from 'react-i18next';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { AuthProvider } from './contexts/AuthContext';
-import store from './store/store';
-import i18n from './i18n/i18n';
-import Header from './components/common/Header';
-import MainPage from './pages/MainPage';
-import LoginPage from './pages/LoginPage';
-import SignupPage from './pages/SignupPage';
-import NotFoundPage from './pages/NotFoundPage';
-import ProtectedRoute from './components/ProtectedRoute';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Provider } from 'react-redux'
+import { I18nextProvider } from 'react-i18next'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { AuthProvider } from './contexts/AuthContext'
+import store from './store/store'
+import i18n from './i18n/i18n'
+import Header from './components/common/Header'
+import MainPage from './pages/MainPage'
+import LoginPage from './pages/LoginPage'
+import SignupPage from './pages/SignupPage'
+import NotFoundPage from './pages/NotFoundPage'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
   return (
@@ -22,11 +22,14 @@ function App() {
           <BrowserRouter>
             <Header />
             <Routes>
-              <Route path="/" element={
-                <ProtectedRoute>
-                  <MainPage />
-                </ProtectedRoute>
-              } />
+              <Route
+                path="/"
+                element={(
+                  <ProtectedRoute>
+                    <MainPage />
+                  </ProtectedRoute>
+                )}
+              />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
               <Route path="/404" element={<NotFoundPage />} />
@@ -48,7 +51,7 @@ function App() {
         </AuthProvider>
       </Provider>
     </I18nextProvider>
-  );
+  )
 }
 
-export default App;
+export default App

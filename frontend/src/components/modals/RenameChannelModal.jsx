@@ -1,50 +1,48 @@
-import { Formik, Form, Field } from 'formik';
-import * as Yup from 'yup';
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { renameChannel } from '../../store/slices/channelsSlice';
-import { filterProfanity } from '../../utils/profanityFilter';
-import { useTranslation } from 'react-i18next';
-import { Modal, Button, Form as BSForm } from 'react-bootstrap';
+import { Formik, Form, Field } from 'formik'
+import * as Yup from 'yup'
+import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { renameChannel } from '../../store/slices/channelsSlice'
+import { filterProfanity } from '../../utils/profanityFilter'
+import { useTranslation } from 'react-i18next'
+import { Modal, Button, Form as BSForm } from 'react-bootstrap'
 
 const RenameChannelModal = ({ show, onHide, channelId }) => {
-  const dispatch = useDispatch();
-  const [submitting, setSubmitting] = useState(false);
-  const channels = useSelector((state) => state.channels.items);
-  const { t } = useTranslation();
+  const dispatch = useDispatch()
+  const [submitting, setSubmitting] = useState(false)
+  const channels = useSelector((state) => state.channels.items)
+  const { t } = useTranslation()
 
-  const channel = channels.find(ch => ch.id === channelId);
+  const channel = channels.find((ch) => ch.id === channelId)
 
   const validationSchema = Yup.object({
     name: Yup.string()
       .min(3, t('chat.channels.addModal.lengthError'))
       .max(20, t('chat.channels.addModal.lengthError'))
       .test('unique', t('chat.channels.addModal.uniqueError'), (value) => {
-        if (value === channel?.name) return true;
-        return !channels.some(ch =>
-          ch.id !== channelId && ch.name.toLowerCase() === value.toLowerCase()
-        );
+        if (value === channel?.name) return true
+        return !channels.some((ch) => ch.id !== channelId && ch.name.toLowerCase() === value.toLowerCase())
       })
       .required(t('auth.validation.required')),
-  });
+  })
 
   const handleSubmit = async (values, { resetForm }) => {
-    if (!channel) return;
+    if (!channel) return
 
-    setSubmitting(true);
+    setSubmitting(true)
     try {
-      const filteredName = filterProfanity(values.name);
-      await dispatch(renameChannel({ channelId, name: filteredName })).unwrap();
-      resetForm();
-      onHide();
+      const filteredName = filterProfanity(values.name)
+      await dispatch(renameChannel({ channelId, name: filteredName })).unwrap()
+      resetForm()
+      onHide()
     } catch (error) {
-      console.error('Ошибка при переименовании канала:', error);
+      console.error('Ошибка при переименовании канала:', error)
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
-  };
+  }
 
-  if (!show || !channel) return null;
+  if (!show || !channel) return null
 
   return (
     <Modal show={show} onHide={onHide} centered>
@@ -56,9 +54,9 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
         initialValues={{ name: channel.name }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
-        enableReinitialize={true}
+        enableReinitialize
       >
-        {({ isValid, dirty, handleSubmit: formikSubmit, errors, touched, submitForm }) => (
+        {({ handleSubmit: formikSubmit, submitForm }) => (
           <Form onSubmit={formikSubmit}>
             <Modal.Body>
               <BSForm.Group>
@@ -78,8 +76,8 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
                         aria-label="Имя канала"
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' && !e.shiftKey) {
-                            e.preventDefault();
-                            submitForm();
+                            e.preventDefault()
+                            submitForm()
                           }
                         }}
                       />
@@ -109,7 +107,7 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
               >
                 {submitting ? (
                   <>
-                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
                     {t('chat.channels.renameModal.loading')}
                   </>
                 ) : t('chat.channels.renameModal.submit')}
@@ -119,7 +117,7 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
         )}
       </Formik>
     </Modal>
-  );
-};
+  )
+}
 
-export default RenameChannelModal;
+export default RenameChannelModal

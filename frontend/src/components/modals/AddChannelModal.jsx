@@ -1,56 +1,52 @@
-import { Formik, Form, Field } from 'formik';
-import * as Yup from 'yup';
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { addChannel } from '../../store/slices/channelsSlice';
-import { useTranslation } from 'react-i18next';
-import { filterProfanity } from '../../utils/profanityFilter';
-import { Modal, Button, Form as BSForm } from 'react-bootstrap';
+import { Formik, Form, Field } from 'formik'
+import * as Yup from 'yup'
+import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { addChannel } from '../../store/slices/channelsSlice'
+import { useTranslation } from 'react-i18next'
+import { filterProfanity } from '../../utils/profanityFilter'
+import { Modal, Button, Form as BSForm } from 'react-bootstrap'
 
 const AddChannelModal = ({ show, onHide }) => {
-  const dispatch = useDispatch();
-  const [submitting, setSubmitting] = useState(false);
-  const channels = useSelector((state) => state.channels.items);
-  const { t } = useTranslation();
+  const dispatch = useDispatch()
+  const [submitting, setSubmitting] = useState(false)
+  const channels = useSelector((state) => state.channels.items)
+  const { t } = useTranslation()
 
   const validationSchema = Yup.object({
     name: Yup.string()
       .min(3, t('chat.channels.addModal.lengthError'))
       .max(20, t('chat.channels.addModal.lengthError'))
-      .test('unique', t('chat.channels.addModal.uniqueError'), (value) => {
-        return !channels.some(channel => 
-          channel.name.toLowerCase() === value.toLowerCase()
-        );
-      })
+      .test('unique', t('chat.channels.addModal.uniqueError'), (value) => !channels.some((channel) => channel.name.toLowerCase() === value.toLowerCase()))
       .required(t('auth.validation.required')),
-  });
+  })
 
   const handleSubmit = async (values, { resetForm }) => {
-    setSubmitting(true);
+    setSubmitting(true)
     try {
-      const filteredName = filterProfanity(values.name);
-      await dispatch(addChannel(filteredName)).unwrap();
-      resetForm();
-      onHide();
+      const filteredName = filterProfanity(values.name)
+      await dispatch(addChannel(filteredName)).unwrap()
+      resetForm()
+      onHide()
     } catch (error) {
-      console.error('Ошибка при создании канала:', error);
+      console.error('Ошибка при создании канала:', error)
     } finally {
-      setSubmitting(false);
+      setSubmitting(false)
     }
-  };
+  }
 
   return (
     <Modal show={show} onHide={onHide} centered>
       <Modal.Header closeButton>
         <Modal.Title>{t('chat.channels.addModal.title')}</Modal.Title>
       </Modal.Header>
-      
+
       <Formik
         initialValues={{ name: '' }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ isValid, dirty, handleSubmit: formikSubmit, errors, touched, submitForm }) => (
+        {({ handleSubmit: formikSubmit, submitForm }) => (
           <Form onSubmit={formikSubmit}>
             <Modal.Body>
               <BSForm.Group>
@@ -70,8 +66,8 @@ const AddChannelModal = ({ show, onHide }) => {
                         aria-label="Имя канала"
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' && !e.shiftKey) {
-                            e.preventDefault();
-                            submitForm();
+                            e.preventDefault()
+                            submitForm()
                           }
                         }}
                       />
@@ -85,23 +81,23 @@ const AddChannelModal = ({ show, onHide }) => {
                 </Field>
               </BSForm.Group>
             </Modal.Body>
-            
+
             <Modal.Footer>
-              <Button 
-                variant="secondary" 
+              <Button
+                variant="secondary"
                 onClick={onHide}
                 disabled={submitting}
               >
                 {t('common.cancel')}
               </Button>
-              <Button 
-                variant="primary" 
+              <Button
+                variant="primary"
                 type="submit"
                 disabled={submitting}
               >
                 {submitting ? (
                   <>
-                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
                     {t('chat.channels.addModal.loading')}
                   </>
                 ) : t('chat.channels.addModal.submit')}
@@ -111,7 +107,7 @@ const AddChannelModal = ({ show, onHide }) => {
         )}
       </Formik>
     </Modal>
-  );
-};
+  )
+}
 
-export default AddChannelModal;
+export default AddChannelModal

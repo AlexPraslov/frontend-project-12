@@ -1,42 +1,42 @@
-import { io } from 'socket.io-client';
+import { io } from 'socket.io-client'
 
-let socket = null;
+let socket = null
 
 export const initSocket = (token) => {
   if (socket) {
-    return socket;
+    return socket
   }
 
   socket = io(window.location.origin, {
     auth: {
-      token: `Bearer ${token}`
+      token: `Bearer ${token}`,
     },
     transports: ['websocket', 'polling'],
     reconnection: true,
     reconnectionAttempts: 5,
     reconnectionDelay: 1000,
-  });
+  })
 
   socket.on('connect', () => {
-    console.log('Socket.IO connected:', socket.id);
-  });
+    console.log('Socket.IO connected:', socket.id)
+  })
 
   socket.on('connect_error', (error) => {
-    console.error('Socket.IO connection error:', error);
-  });
+    console.error('Socket.IO connection error:', error)
+  })
 
   socket.on('disconnect', (reason) => {
-    console.log('Socket.IO disconnected:', reason);
-  });
+    console.log('Socket.IO disconnected:', reason)
+  })
 
-  return socket;
-};
+  return socket
+}
 
-export const getSocket = () => socket;
+export const getSocket = () => socket
 
 export const disconnectSocket = () => {
   if (socket) {
-    socket.disconnect();
-    socket = null;
+    socket.disconnect()
+    socket = null
   }
-};
+}

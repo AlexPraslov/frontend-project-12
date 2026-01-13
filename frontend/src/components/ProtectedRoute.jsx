@@ -1,8 +1,8 @@
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { Navigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading } = useAuth()
 
   if (loading) {
     return (
@@ -12,18 +12,19 @@ const ProtectedRoute = ({ children }) => {
         alignItems: 'center',
         height: 'calc(100vh - 70px)',
         fontSize: '18px',
-        color: '#666'
-      }}>
+        color: '#666',
+      }}
+      >
         Загрузка...
       </div>
-    );
+    )
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" replace />
   }
 
-  return children;
-};
+  return children
+}
 
-export default ProtectedRoute;
+export default ProtectedRoute

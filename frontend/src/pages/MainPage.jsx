@@ -1,20 +1,20 @@
-import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { fetchChannels } from '../store/slices/channelsSlice';
-import ChannelsList from '../components/channels/ChannelsList';
-import MessagesList from '../components/messages/MessagesList';
-import AddChannelModal from '../components/modals/AddChannelModal';
-import { useTranslation } from 'react-i18next';
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { fetchChannels } from '../store/slices/channelsSlice'
+import ChannelsList from '../components/channels/ChannelsList'
+import MessagesList from '../components/messages/MessagesList'
+import AddChannelModal from '../components/modals/AddChannelModal'
+import { useTranslation } from 'react-i18next'
+import { Container, Row, Col, Button } from 'react-bootstrap'
 
 const MainPage = () => {
-  const dispatch = useDispatch();
-  const [showAddModal, setShowAddModal] = useState(false);
-  const { t } = useTranslation();
+  const dispatch = useDispatch()
+  const [showAddModal, setShowAddModal] = useState(false)
+  const { t } = useTranslation()
 
   useEffect(() => {
-    dispatch(fetchChannels());
-  }, [dispatch]);
+    dispatch(fetchChannels())
+  }, [dispatch])
 
   return (
     <>
@@ -50,12 +50,12 @@ const MainPage = () => {
         </Row>
       </Container>
 
-      <AddChannelModal 
-        show={showAddModal} 
-        onHide={() => setShowAddModal(false)} 
+      <AddChannelModal
+        show={showAddModal}
+        onHide={() => setShowAddModal(false)}
       />
     </>
-  );
-};
+  )
+}
 
-export default MainPage;
+export default MainPage
