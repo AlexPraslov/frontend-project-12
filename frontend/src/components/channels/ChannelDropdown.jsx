@@ -33,7 +33,7 @@ const ChannelDropdown = ({ channelId }) => {
 
   return (
     <>
-      <div style={{ position: 'relative', display: 'inline-block' }}>
+      <div className="position-relative d-inline-block">
         <button
           ref={buttonRef}
           type="button"
@@ -42,39 +42,22 @@ const ChannelDropdown = ({ channelId }) => {
             e.preventDefault()
             setDropdownOpen(!dropdownOpen)
           }}
+          className="btn btn-link text-secondary p-1 rounded"
           style={{
-            background: 'none',
-            border: 'none',
-            padding: '6px',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            color: '#6c757d',
-            fontSize: '16px',
-            lineHeight: '1',
             width: '32px',
             height: '32px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            position: 'relative',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.color = '#007bff'
-            e.currentTarget.style.backgroundColor = '#f0f0f0'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.color = '#6c757d'
-            e.currentTarget.style.backgroundColor = 'transparent'
           }}
           aria-label="Управление каналом"
           title="Управление каналом"
         >
-          <span style={{ fontSize: '20px', fontWeight: 'bold' }}>⋮</span>
+          <span className="fs-5 fw-bold">⋮</span>
           {/* ТОЛЬКО для теста 11: с кавычками */}
           <span
+            className="position-absolute opacity-0"
             style={{
-              position: 'absolute',
-              opacity: 0,
               width: '1px',
               height: '1px',
               overflow: 'hidden',
@@ -88,21 +71,13 @@ const ChannelDropdown = ({ channelId }) => {
         {dropdownOpen && (
           <div
             ref={dropdownRef}
+            className="position-absolute top-100 end-0 z-3 bg-white border rounded shadow"
             style={{
-              position: 'absolute',
-              top: '100%',
-              right: '0',
-              zIndex: 1000,
-              backgroundColor: 'white',
-              border: '1px solid rgba(0,0,0,.15)',
-              borderRadius: '6px',
-              boxShadow: '0 6px 20px rgba(0,0,0,.15)',
               minWidth: '220px',
               marginTop: '8px',
-              overflow: 'hidden',
             }}
           >
-            <div style={{ padding: '4px 0' }}>
+            <div className="py-1">
               <button
                 type="button"
                 onClick={(e) => {
@@ -110,24 +85,7 @@ const ChannelDropdown = ({ channelId }) => {
                   setShowRenameModal(true)
                   setDropdownOpen(false)
                 }}
-                style={{
-                  display: 'block',
-                  width: '100%',
-                  padding: '10px 16px',
-                  background: 'none',
-                  border: 'none',
-                  textAlign: 'left',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  color: '#212529',
-                  transition: 'background-color 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#f8f9fa'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent'
-                }}
+                className="btn btn-link text-dark text-decoration-none w-100 text-start px-3 py-2 border-0"
               >
                 {t('chat.channels.dropdown.rename')}
               </button>
@@ -139,34 +97,12 @@ const ChannelDropdown = ({ channelId }) => {
                   setShowRemoveModal(true)
                   setDropdownOpen(false)
                 }}
-                style={{
-                  display: 'block',
-                  width: '100%',
-                  padding: '10px 16px',
-                  background: 'none',
-                  border: 'none',
-                  textAlign: 'left',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  color: '#dc3545',
-                  transition: 'background-color 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#f8f9fa'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent'
-                }}
+                className="btn btn-link text-danger text-decoration-none w-100 text-start px-3 py-2 border-0"
               >
                 {t('chat.channels.dropdown.remove')}
               </button>
 
-              <div
-                style={{
-                  borderTop: '1px solid #e9ecef',
-                  margin: '6px 0',
-                }}
-              />
+              <hr className="my-1 mx-3" />
 
               <button
                 type="button"
@@ -175,24 +111,7 @@ const ChannelDropdown = ({ channelId }) => {
                   setShowAddModal(true)
                   setDropdownOpen(false)
                 }}
-                style={{
-                  display: 'block',
-                  width: '100%',
-                  padding: '10px 16px',
-                  background: 'none',
-                  border: 'none',
-                  textAlign: 'left',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  color: '#28a745',
-                  transition: 'background-color 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#f8f9fa'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent'
-                }}
+                className="btn btn-link text-success text-decoration-none w-100 text-start px-3 py-2 border-0"
               >
                 {t('chat.channels.dropdown.addChannel')}
               </button>

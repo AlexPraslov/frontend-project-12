@@ -1,25 +1,17 @@
 import { Formik, Form, Field } from 'formik'
-import * as Yup from 'yup'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { addChannel } from '../../store/slices/channelsSlice'
 import { useTranslation } from 'react-i18next'
 import { filterProfanity } from '../../utils/profanityFilter'
 import { Modal, Button, Form as BSForm } from 'react-bootstrap'
+import { channelSchema } from '../../utils/validationSchemas'
 
 const AddChannelModal = ({ show, onHide }) => {
   const dispatch = useDispatch()
   const [submitting, setSubmitting] = useState(false)
   const channels = useSelector(state => state.channels.items)
   const { t } = useTranslation()
-
-  const validationSchema = Yup.object({
-    name: Yup.string()
-      .min(3, t('chat.channels.addModal.lengthError'))
-      .max(20, t('chat.channels.addModal.lengthError'))
-      .test('unique', t('chat.channels.addModal.uniqueError'), value => !channels.some(channel => channel.name.toLowerCase() === value.toLowerCase()))
-      .required(t('auth.validation.required')),
-  })
 
   const handleSubmit = async (values, { resetForm }) => {
     setSubmitting(true)
@@ -45,7 +37,7 @@ const AddChannelModal = ({ show, onHide }) => {
 
       <Formik
         initialValues={{ name: '' }}
-        validationSchema={validationSchema}
+        validationSchema={channelSchema(t, channels)}
         onSubmit={handleSubmit}
       >
         {({ handleSubmit: formikSubmit, submitForm }) => (

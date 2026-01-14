@@ -1,11 +1,11 @@
 import { Formik, Form, Field } from 'formik'
-import * as Yup from 'yup'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { renameChannel } from '../../store/slices/channelsSlice'
 import { filterProfanity } from '../../utils/profanityFilter'
 import { useTranslation } from 'react-i18next'
 import { Modal, Button, Form as BSForm } from 'react-bootstrap'
+import { channelSchema } from '../../utils/validationSchemas'
 
 const RenameChannelModal = ({ show, onHide, channelId }) => {
   const dispatch = useDispatch()
@@ -14,17 +14,6 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
   const { t } = useTranslation()
 
   const channel = channels.find(ch => ch.id === channelId)
-
-  const validationSchema = Yup.object({
-    name: Yup.string()
-      .min(3, t('chat.channels.addModal.lengthError'))
-      .max(20, t('chat.channels.addModal.lengthError'))
-      .test('unique', t('chat.channels.addModal.uniqueError'), (value) => {
-        if (value === channel?.name) return true
-        return !channels.some(ch => ch.id !== channelId && ch.name.toLowerCase() === value.toLowerCase())
-      })
-      .required(t('auth.validation.required')),
-  })
 
   const handleSubmit = async (values, { resetForm }) => {
     if (!channel) return
@@ -54,7 +43,7 @@ const RenameChannelModal = ({ show, onHide, channelId }) => {
 
       <Formik
         initialValues={{ name: channel.name }}
-        validationSchema={validationSchema}
+        validationSchema={channelSchema(t, channels, channelId, channel.name)}
         onSubmit={handleSubmit}
         enableReinitialize
       >
